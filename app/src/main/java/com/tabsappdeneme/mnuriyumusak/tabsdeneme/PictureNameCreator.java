@@ -1,5 +1,7 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
+
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -8,9 +10,9 @@ import java.util.Date;
  */
 
 public class PictureNameCreator {
-    public String getPictureName()
+    public String getPictureName(DBHelper db)
     {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String timestamp = sdf.format(new Date());
         return "tabs" + timestamp + ".jpg";
     }

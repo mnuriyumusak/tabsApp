@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:text="KAYDEt"
+        android:layout_height="wrap_content"
+        android:id="@+id/kaydet_button"
+        android:layout_width="300dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="37dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/university_field"
+        android:hint="giriniz..."
+        android:layout_marginLeft="26dp"
+        android:layout_marginEnd="11dp"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/nick_field"
+        android:hint="giriniz..."
+        android:layout_alignBaseline="@+id/textView"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignStart="@+id/university_field" />
+
+    <TextView
+        android:text="Üniversite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/kaydet_button"
+        android:layout_marginTop="93dp" />
+
+    <TextView
+        android:text="Nick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textSize="18sp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="23dp" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:id="@+id/bulut_switch"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/nick_field"
+        android:layout_toEndOf="@+id/textView3" />
+
+    <TextView
+        android:text="Buluta At"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_alignBaseline="@+id/bulut_switch"
+        android:layout_alignBottom="@+id/bulut_switch"
+        android:layout_alignStart="@+id/textView" />
+
+</RelativeLayout>
