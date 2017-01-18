@@ -10,7 +10,7 @@ import java.util.Date;
  */
 
 public class PictureNameCreator {
-    public String getPictureName(DBHelper db)
+    public String getPictureName()
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String timestamp = sdf.format(new Date());

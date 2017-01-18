@@ -22,4 +22,14 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:text="eklemeye git"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/cek_button"
+        android:layout_marginEnd="27dp"
+        android:layout_marginTop="169dp"
+        android:id="@+id/git" />
+
 </RelativeLayout>

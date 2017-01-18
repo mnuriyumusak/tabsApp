@@ -32,8 +32,14 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table infos " +
-                        "(id integer primary key, photo_no integer ,university_name text ,nick_name text,bulut integer);"
+                        "(id integer primary key, university_name text ,nick_name text,bulut integer);"
         );
+
+        db.execSQL(
+                "create table dersler " +
+                        "(id integer primary key, ders_adi text ,ders_gunu text ,ders_baslangic text,ders_bitis text, ders_photo_no integer);"
+        );
+
         insertFirstRow(db);
     }
 
@@ -41,33 +47,45 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO Auto-generated method stub
         db.execSQL("DROP TABLE IF EXISTS infos");
+        db.execSQL("DROP TABLE IF EXISTS dersler");
         onCreate(db);
-
     }
 
-    public boolean increasePhotoNo()
+    public boolean increasePhotoNo(String dersAdi)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor res =  db.rawQuery( "select photo_no from infos", null );
+        Cursor res =  db.rawQuery( "select ders_photo_no from infos where ders_adi="+dersAdi, null );
         ContentValues contentValues = new ContentValues();
         int cureentPhotoNo = -1;
         res.moveToFirst();
-        cureentPhotoNo = res.getInt(res.getColumnIndex("photo_no"));
+        cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
         cureentPhotoNo++;
-        db.execSQL("update infos set photo_no="+cureentPhotoNo+" where id=1");
+        db.execSQL("update dersler set ders_photo_no="+cureentPhotoNo+" where ders_adi="+dersAdi);
         db.close();
         return true;
     }
 
-    public int getPhotoNo() {
+    public int getPhotoNo(String dersAdi) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select photo_no from infos", null );
+        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi="+dersAdi, null );
         int cureentPhotoNo = -1;
         res.moveToFirst();
-        cureentPhotoNo = res.getInt(res.getColumnIndex("photo_no"));
+        cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
         db.close();
         return cureentPhotoNo;
+    }
+
+    public void dersEkle(String ad, String gun, String baslangic, String bitis)
+    {
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        contentValues.put("ders_adi", ad);
+        contentValues.put("ders_gunu", gun);
+        contentValues.put("ders_baslangic", baslangic);
+        contentValues.put("ders_bitis", bitis);
+        contentValues.put("ders_photo_no", 0);
+        db.insert("dersler", null, contentValues);
     }
 
     public void insertFirstRow (SQLiteDatabase db) {
@@ -75,7 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("photo_no", 0);
         contentValues.put("university_name", "Bilkent");
         db.insert("infos", null, contentValues);
-
+        dersEkle("", "", "", "");
     }
 
     public void addKayıtInfos(String uni, String nick, int bulut)
@@ -103,6 +121,40 @@ public class DBHelper extends SQLiteOpenHelper {
         return name;
     }
 
+    public int getTumDersler()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select * from dersler", null);
+        ArrayList<String[]> all = new ArrayList<>();
+        int howMany = res.getCount();
+        db.close();
+        return howMany;
+        /*
+        if(howMany != 0)
+        {
+            String[] dersAdi = new String[howMany];
+            String[] gun = new String[howMany];
+            String[] baslangic = new String[howMany];
+            String[] bitis = new String[howMany];
+            int index = 0;
+            while (res.moveToFirst()) {
+                dersAdi[index] = res.getString(res.getColumnIndex("ders_adi"));
+                gun[index] = res.getString(res.getColumnIndex("ders_gunu"));
+                baslangic[index] = res.getString(res.getColumnIndex("ders_baslangic"));
+                bitis[index] = res.getString(res.getColumnIndex("ders_bitis"));
+                index++;
+            }
+            db.close();
+            all.add(dersAdi);
+            all.add(gun);
+            all.add(baslangic);
+            all.add(bitis);
+            return all;
+        }
+        else
+            return all;
+        */
+    }
 
 
 }

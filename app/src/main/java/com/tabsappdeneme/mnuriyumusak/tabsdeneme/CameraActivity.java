@@ -28,6 +28,8 @@ import java.util.EventListener;
 
 public class CameraActivity extends AppCompatActivity {
 
+    DBHelper mydb;
+    Button ekleye_git;
     Button btnTakePhoto; //foto çekme butonu
     ImageView imgTakenPhoto; //fonun çekilince nerde gösterileceği
     private static final int CAM_REQUEST = 1313;
@@ -36,14 +38,25 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mydb = new DBHelper(this);
         if(!hasPermissions())
         {
             requestPerms();
         }
 
+        ekleye_git = (Button) findViewById(R.id.git);
         btnTakePhoto = (Button) findViewById(R.id.cek_button);
         imgTakenPhoto = (ImageView) findViewById(R.id.imageview1);
         btnTakePhoto.setOnClickListener(new btnTakePhotoClicker());
+
+
+        ekleye_git.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(CameraActivity.this, DersGirme.class);
+                startActivity(intent);
+            }
+        });
     }
 
     //başarılı bir çekim işleminin sonucu

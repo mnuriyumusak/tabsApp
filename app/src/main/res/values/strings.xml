@@ -5,4 +5,15 @@
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="prompt">Seçiniz</string>
+
+
+    <string-array name="günler">
+        <item>Pazartesi</item>
+        <item>Salı</item>
+        <item>Çarşamba</item>
+        <item>Perşembe</item>
+        <item>Cuma</item>
+    </string-array>
+
 </resources>

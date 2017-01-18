@@ -30,8 +30,7 @@ public class DersEkleme extends Activity {
     EditText university;
     EditText nick;
     Switch bulut;
-    Button b6;
-    public DBHelper mydb ;
+    private DBHelper mydb ;
 
 
     @Override
@@ -40,7 +39,6 @@ public class DersEkleme extends Activity {
         setContentView(R.layout.ders_ekleme);
         mydb = new DBHelper(this);
 
-        b6 = (Button) findViewById(R.id.button6);
         kaydet_button = (Button) findViewById(R.id.kaydet_button);
         university = (EditText) findViewById(R.id.university_field);
         nick = (EditText) findViewById(R.id.nick_field);
@@ -54,11 +52,7 @@ public class DersEkleme extends Activity {
                 mydb.addKayıtInfos(uniName,nickName,isBulut);
             }
         });
-        b6.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"mesaj:"+mydb.getNickName(),Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
     }
 }
