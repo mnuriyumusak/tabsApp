@@ -37,30 +37,12 @@ public class DersGirme  extends Activity {
     int minute_x;
     int currentColor = -1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ders_girme);
-        gorSayfasiniOlustur();
-
-        TabHost host = (TabHost)findViewById(R.id.tabhost);
-        host.setup();
-
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("EKLE");
-        spec.setContent(R.id.EKLE);
-        spec.setIndicator("EKLE");
-        host.addTab(spec);
-
-        //Tab 2
-        spec = host.newTabSpec("GOR");
-        spec.setContent(R.id.GOR);
-        spec.setIndicator("GOR");
-        host.addTab(spec);
-
-
         mydb = new DBHelper(this);
+
         baslangic = (EditText) findViewById(R.id.baslangic_field);
         bitis = (EditText) findViewById(R.id.bitis_field);
         ders_harf = (EditText) findViewById(R.id.ders_harf);
@@ -151,6 +133,23 @@ public class DersGirme  extends Activity {
         allTextViews[39] = v40;
 
         setAllInvisible();
+        gorSayfasiniOlustur();
+
+        TabHost host = (TabHost)findViewById(R.id.tabhost);
+        host.setup();
+
+        //Tab 1
+        TabHost.TabSpec spec = host.newTabSpec("EKLE");
+        spec.setContent(R.id.EKLE);
+        spec.setIndicator("EKLE");
+        host.addTab(spec);
+
+        //Tab 2
+        spec = host.newTabSpec("GOR");
+        spec.setContent(R.id.GOR);
+        spec.setIndicator("GOR");
+        host.addTab(spec);
+
 
         baslangic.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -189,6 +188,7 @@ public class DersGirme  extends Activity {
                 ders_rakam.setText("");
             }
         });
+
     }
 
     public int getColor()
@@ -237,20 +237,15 @@ public class DersGirme  extends Activity {
 
     public void gorSayfasiniOlustur()
     {
-        Toast.makeText(getApplicationContext(),"mesaj:"+mydb.getTumDersler(),Toast.LENGTH_SHORT).show();
-        /*
-        if( == null)
-            Toast.makeText(getApplicationContext(),"null gardas",Toast.LENGTH_SHORT).show();
-        else
+        ArrayList<String[]> all = mydb.getTumDersler();
+        if(all.size() != 0)
         {
-            ArrayList<String[]> all = mydb.getTumDersler();
             for(int i = 0; i < all.get(0).length ; i++)
             {
                 gorSayfasinaEkle(all.get(0)[i], all.get(1)[i], all.get(2)[i], all.get(3)[i]);
             }
 
         }
-        */
 
     }
 

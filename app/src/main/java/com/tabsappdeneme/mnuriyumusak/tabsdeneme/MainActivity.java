@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,22 +61,13 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     }
 
     private void createMenuList() {
-        SlideMenuItem menuItem0 = new SlideMenuItem(ContentFragment.CLOSE, R.drawable.icn_close);
+        SlideMenuItem menuItem0 = new SlideMenuItem(ContentFragment.DERS_EKLE_GOR, R.drawable.ders_ekle);
         list.add(menuItem0);
-        SlideMenuItem menuItem = new SlideMenuItem(ContentFragment.BUILDING, R.drawable.icn_1);
+        SlideMenuItem menuItem = new SlideMenuItem(ContentFragment.FOTO_CEK, R.drawable.foto_cek);
         list.add(menuItem);
-        SlideMenuItem menuItem2 = new SlideMenuItem(ContentFragment.BOOK, R.drawable.icn_2);
+        SlideMenuItem menuItem2 = new SlideMenuItem(ContentFragment.INFO_GUNCELLEME, R.drawable.bilgi_guncelle);
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(ContentFragment.PAINT, R.drawable.icn_3);
-        list.add(menuItem3);
-        SlideMenuItem menuItem4 = new SlideMenuItem(ContentFragment.CASE, R.drawable.icn_4);
-        list.add(menuItem4);
-        SlideMenuItem menuItem5 = new SlideMenuItem(ContentFragment.SHOP, R.drawable.icn_5);
-        list.add(menuItem5);
-        SlideMenuItem menuItem6 = new SlideMenuItem(ContentFragment.PARTY, R.drawable.icn_6);
-        list.add(menuItem6);
-        SlideMenuItem menuItem7 = new SlideMenuItem(ContentFragment.MOVIE, R.drawable.icn_7);
-        list.add(menuItem7);
+
     }
 
 
@@ -147,14 +139,17 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     }
 
     private ScreenShotable replaceFragment(ScreenShotable screenShotable, int topPosition) {
-        this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
+        contentFragment = ContentFragment.newInstance(R.drawable.content_music);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, contentFragment)
+                .commit();
         View view = findViewById(R.id.content_frame);
+
         int finalRadius = Math.max(view.getWidth(), view.getHeight());
         SupportAnimator animator = ViewAnimationUtils.createCircularReveal(view, 0, topPosition, 0, finalRadius);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.setDuration(ViewAnimator.CIRCULAR_REVEAL_ANIMATION_DURATION);
 
-        findViewById(R.id.content_overlay).setBackgroundDrawable(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
         animator.start();
         ContentFragment contentFragment = ContentFragment.newInstance(this.res);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();
@@ -164,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
         switch (slideMenuItem.getName()) {
-            case ContentFragment.CLOSE:
+            case ContentFragment.INFO_GUNCELLEME:
                 return screenShotable;
             default:
                 return replaceFragment(screenShotable, position);

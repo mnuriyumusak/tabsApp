@@ -86,14 +86,13 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("ders_bitis", bitis);
         contentValues.put("ders_photo_no", 0);
         db.insert("dersler", null, contentValues);
+        db.close();
     }
 
     public void insertFirstRow (SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("photo_no", 0);
         contentValues.put("university_name", "Bilkent");
         db.insert("infos", null, contentValues);
-        dersEkle("", "", "", "");
     }
 
     public void addKayıtInfos(String uni, String nick, int bulut)
@@ -121,15 +120,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return name;
     }
 
-    public int getTumDersler()
+    public ArrayList<String[]> getTumDersler()
     {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select * from dersler", null);
         ArrayList<String[]> all = new ArrayList<>();
-        int howMany = res.getCount();
-        db.close();
-        return howMany;
-        /*
+        int howMany = 0;
+        howMany = res.getCount();
+
         if(howMany != 0)
         {
             String[] dersAdi = new String[howMany];
@@ -137,23 +135,27 @@ public class DBHelper extends SQLiteOpenHelper {
             String[] baslangic = new String[howMany];
             String[] bitis = new String[howMany];
             int index = 0;
-            while (res.moveToFirst()) {
-                dersAdi[index] = res.getString(res.getColumnIndex("ders_adi"));
-                gun[index] = res.getString(res.getColumnIndex("ders_gunu"));
-                baslangic[index] = res.getString(res.getColumnIndex("ders_baslangic"));
-                bitis[index] = res.getString(res.getColumnIndex("ders_bitis"));
-                index++;
+            if (res.moveToFirst()) {
+                do {
+                    dersAdi[index] = res.getString(res.getColumnIndex("ders_adi"));
+                    gun[index] = res.getString(res.getColumnIndex("ders_gunu"));
+                    baslangic[index] = res.getString(res.getColumnIndex("ders_baslangic"));
+                    bitis[index] = res.getString(res.getColumnIndex("ders_bitis"));
+                    index++;
+                } while (res.moveToNext());
             }
-            db.close();
             all.add(dersAdi);
             all.add(gun);
             all.add(baslangic);
             all.add(bitis);
+            db.close();
             return all;
         }
         else
+        {
+            db.close();
             return all;
-        */
+        }
     }
 
 

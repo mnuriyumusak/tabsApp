@@ -9,25 +9,23 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import com.tabsappdeneme.mnuriyumusak.tabsdeneme.R;
 
 public class ContentFragment extends Fragment implements ScreenShotable {
-    public static final String CLOSE = "Close";
-    public static final String BUILDING = "Building";
-    public static final String BOOK = "Book";
-    public static final String PAINT = "Paint";
-    public static final String CASE = "Case";
-    public static final String SHOP = "Shop";
-    public static final String PARTY = "Party";
-    public static final String MOVIE = "Movie";
+    public static final String DERS_EKLE_GOR = "Ders Ekle";
+    public static final String FOTO_CEK = "Foto Çek";
+    public static final String INFO_GUNCELLEME = "Bilgi Güncelle";
+
 
     private View containerView;
-    protected ImageView mImageView;
     protected int res;
     private Bitmap bitmap;
+    public FrameLayout fl;
 
     public static ContentFragment newInstance(int resId) {
         ContentFragment contentFragment = new ContentFragment();
@@ -41,9 +39,13 @@ public class ContentFragment extends Fragment implements ScreenShotable {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.containerView = view.findViewById(R.id.container);
+        this.containerView = view.findViewById(R.id.rv);
     }
 
+    public void doIt()
+    {
+
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +55,8 @@ public class ContentFragment extends Fragment implements ScreenShotable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_menu_layout, container, false);
-        mImageView = (ImageView) rootView.findViewById(R.id.image_content);
-        mImageView.setClickable(true);
-        mImageView.setFocusable(true);
-        mImageView.setImageResource(res);
-        return rootView;
+        View de = inflater.inflate(R.layout.ders_girme, container, false);
+        return de;
     }
 
     @Override

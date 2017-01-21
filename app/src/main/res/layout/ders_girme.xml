@@ -44,7 +44,8 @@
                         android:layout_alignBaseline="@+id/v23"
                         android:layout_alignBottom="@+id/v23"
                         android:layout_toEndOf="@+id/v23"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v18"
@@ -54,7 +55,8 @@
                         android:layout_alignBaseline="@+id/v17"
                         android:layout_alignBottom="@+id/v17"
                         android:layout_alignStart="@+id/v38"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:layout_marginStart="10dp"
@@ -65,7 +67,8 @@
                         android:layout_alignBaseline="@+id/v7"
                         android:layout_alignBottom="@+id/v7"
                         android:layout_toEndOf="@+id/v7"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/bos1"
@@ -121,7 +124,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v1"
                         android:layout_alignStart="@+id/v1"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v11"
@@ -130,7 +134,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v6"
                         android:layout_alignStart="@+id/v6"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v16"
@@ -139,7 +144,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v11"
                         android:layout_alignStart="@+id/v11"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v21"
@@ -148,7 +154,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v16"
                         android:layout_alignStart="@+id/v16"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v26"
@@ -157,7 +164,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v21"
                         android:layout_alignStart="@+id/v21"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v31"
@@ -166,7 +174,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v26"
                         android:layout_alignStart="@+id/v26"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v36"
@@ -175,7 +184,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v31"
                         android:layout_alignStart="@+id/v31"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v7"
@@ -184,7 +194,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v2"
                         android:layout_alignStart="@+id/v2"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v12"
@@ -193,7 +204,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v7"
                         android:layout_alignStart="@+id/v7"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v17"
@@ -202,7 +214,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v12"
                         android:layout_alignStart="@+id/v12"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v22"
@@ -211,7 +224,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v17"
                         android:layout_alignStart="@+id/v17"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v27"
@@ -220,7 +234,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v22"
                         android:layout_alignStart="@+id/v22"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v32"
@@ -229,7 +244,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v27"
                         android:layout_alignStart="@+id/v27"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v37"
@@ -238,7 +254,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v32"
                         android:layout_alignStart="@+id/v32"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v3"
@@ -247,7 +264,8 @@
                         android:layout_width="58dp"
                         android:layout_above="@+id/v8"
                         android:layout_alignStart="@+id/v8"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v13"
@@ -256,7 +274,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v8"
                         android:layout_alignStart="@+id/v18"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v33"
@@ -265,7 +284,8 @@
                         android:layout_width="58dp"
                         android:layout_above="@+id/v38"
                         android:layout_alignStart="@+id/v8"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v38"
@@ -275,7 +295,8 @@
                         android:layout_alignBaseline="@+id/v37"
                         android:layout_alignBottom="@+id/v37"
                         android:layout_alignStart="@+id/v33"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v28"
@@ -284,7 +305,8 @@
                         android:layout_width="58dp"
                         android:layout_above="@+id/v33"
                         android:layout_alignStart="@+id/v33"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v23"
@@ -293,7 +315,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v18"
                         android:layout_alignStart="@+id/v28"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/textView63"
@@ -311,7 +334,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v4"
                         android:layout_alignStart="@+id/v4"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v14"
@@ -320,7 +344,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v9"
                         android:layout_alignStart="@+id/v9"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v19"
@@ -329,7 +354,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v14"
                         android:layout_alignStart="@+id/v29"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v29"
@@ -338,7 +364,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v24"
                         android:layout_alignStart="@+id/v24"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v34"
@@ -347,7 +374,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v29"
                         android:layout_alignStart="@+id/v29"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v39"
@@ -356,7 +384,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v34"
                         android:layout_alignStart="@+id/v34"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v20"
@@ -365,7 +394,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/textView100"
                         android:layout_alignStart="@+id/textView100"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v25"
@@ -374,7 +404,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v20"
                         android:layout_alignStart="@+id/v20"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v30"
@@ -383,7 +414,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v25"
                         android:layout_alignStart="@+id/v25"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v35"
@@ -392,7 +424,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v30"
                         android:layout_alignStart="@+id/v30"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v15"
@@ -403,7 +436,8 @@
                         android:layout_alignBottom="@+id/textView63"
                         android:layout_toEndOf="@+id/textView63"
                         android:layout_marginStart="13dp"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v40"
@@ -412,7 +446,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v35"
                         android:layout_alignStart="@+id/v35"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v10"
@@ -421,7 +456,8 @@
                         android:layout_width="58dp"
                         android:layout_below="@+id/v5"
                         android:layout_alignStart="@+id/textView100"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@android:color/black"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:text="          "
@@ -451,7 +487,8 @@
                         android:textColor="@android:color/black"
                         android:layout_alignBaseline="@+id/v1"
                         android:layout_alignBottom="@+id/v1"
-                        android:layout_toEndOf="@+id/v1" />
+                        android:layout_toEndOf="@+id/v1"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v4"
@@ -461,7 +498,8 @@
                         android:textColor="@android:color/black"
                         android:layout_alignBaseline="@+id/v3"
                         android:layout_alignBottom="@+id/v3"
-                        android:layout_alignStart="@+id/textView63" />
+                        android:layout_alignStart="@+id/textView63"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:id="@+id/v5"
@@ -470,7 +508,8 @@
                         android:layout_width="58dp"
                         android:textColor="@android:color/black"
                         android:layout_alignTop="@+id/v1"
-                        android:layout_alignStart="@+id/v10" />
+                        android:layout_alignStart="@+id/v10"
+                        android:textSize="13.5sp" />
 
                     <TextView
                         android:text="    Salı"
@@ -531,13 +570,12 @@
                         android:background="@color/color1"
                         android:layout_height="55dp"
                         android:layout_width="58dp"
-                        android:textSize="13sp"
+                        android:textSize="13.5sp"
                         android:textColor="@android:color/black"
                         android:layout_alignBaseline="@+id/textView34"
                         android:layout_alignBottom="@+id/textView34"
                         android:layout_alignEnd="@+id/textView55"
-                        tools:text=" "
-                        android:text=" " />
+                        tools:text=" " />
 
                 </RelativeLayout>
 
