@@ -3,7 +3,15 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,7 +28,7 @@ import java.util.ArrayList;
  * Created by Nuri on 18.01.2017.
  */
 
-public class DersGirme  extends Activity {
+public class DersGirme  extends AppCompatActivity {
     DBHelper mydb;
     EditText baslangic;
     EditText bitis;
@@ -37,11 +45,63 @@ public class DersGirme  extends Activity {
     int minute_x;
     int currentColor = -1;
 
+
+    //drawer things
+    private DrawerLayout myDrawer;
+    private ActionBarDrawerToggle myToggle;
+    private Toolbar myToolBar;
+    private NavigationView navigationView;
+
+    //yukardaki soldaki menu butonuna basınca menünün açılması için
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(myToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ders_girme);
         mydb = new DBHelper(this);
+
+        //drawer things
+        navigationView = (NavigationView) findViewById(R.id.navigation_view_ders_girme);
+        myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_ders_girme);
+        myToggle = new ActionBarDrawerToggle(this,myDrawer,R.string.open, R.string.close);
+        myToolBar = (Toolbar)  findViewById(R.id.nav_action);
+
+        setSupportActionBar(myToolBar);
+        myDrawer.addDrawerListener(myToggle);
+        myToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch(item.getItemId())
+                {
+                    case R.id.nav_settings:
+                        Intent intent = new Intent(DersGirme.this, MainActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_account:
+                        Intent intent2 = new Intent(DersGirme.this, DersEkleme.class);
+                        startActivity(intent2);
+                        item.setChecked(true);
+                        break;
+                }
+                return false;
+            }
+        });
+
 
         baslangic = (EditText) findViewById(R.id.baslangic_field);
         bitis = (EditText) findViewById(R.id.bitis_field);
@@ -345,6 +405,7 @@ public class DersGirme  extends Activity {
         }
         return null;
     }
+
 
     protected TimePickerDialog.OnTimeSetListener kTimePickerListener =
             new TimePickerDialog.OnTimeSetListener()

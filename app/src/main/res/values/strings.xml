@@ -6,7 +6,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
     <string name="prompt">Seçiniz</string>
-
+    <string name="open">Aç</string>
+    <string name="close">Kapat</string>
 
     <string-array name="günler">
         <item>Pazartesi</item>
@@ -15,5 +16,9 @@
         <item>Perşembe</item>
         <item>Cuma</item>
     </string-array>
+    <string name="title_activity_navigation_main">NavigationMain</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>
