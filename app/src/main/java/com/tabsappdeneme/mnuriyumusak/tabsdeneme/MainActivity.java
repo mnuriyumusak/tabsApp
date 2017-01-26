@@ -3,6 +3,7 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +12,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.io.File;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu_layout);
+
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view_main);
         myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);

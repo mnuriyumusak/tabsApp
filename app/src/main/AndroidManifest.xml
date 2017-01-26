@@ -3,6 +3,7 @@
     package="com.tabsappdeneme.mnuriyumusak.tabsdeneme">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -12,17 +13,22 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+
         <activity
             android:name=".CameraActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
+
         </activity>
         <activity
             android:name=".AfterPicture"

@@ -33,12 +33,13 @@ public class CameraActivity extends AppCompatActivity {
     Button btnTakePhoto; //foto çekme butonu
     ImageView imgTakenPhoto; //fonun çekilince nerde gösterileceği
     private static final int CAM_REQUEST = 1313;
-    PictureNameCreator pnc = new PictureNameCreator();
+    PictureNameCreator pnc;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        pnc = new PictureNameCreator(externalPath);
         mydb = new DBHelper(this);
         if(!hasPermissions())
         {
@@ -100,14 +101,9 @@ public class CameraActivity extends AppCompatActivity {
         public void onClick(View v) {
             // TODO Auto-generated method stub
             Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            File picSavePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp");
-            if(!picSavePath.exists())
-            {
-                picSavePath.mkdir();
-            }
-            String picName = pnc.getPictureName();
-            File imageFile = new File(picSavePath, picName);
-            Uri pictureUri = Uri.fromFile(imageFile);
+
+
+            Uri pictureUri = pnc.getPictureSavePath(mydb,false);
             cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
             startActivityForResult(cameraintent, CAM_REQUEST);
         }

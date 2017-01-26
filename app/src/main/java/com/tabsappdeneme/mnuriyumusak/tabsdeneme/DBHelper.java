@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.widget.Toast;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -32,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table infos " +
-                        "(id integer primary key, university_name text ,nick_name text,bulut integer);"
+                        "(id integer primary key, university_name text ,nick_name text,bulut integer,external_storage integer);"
         );
 
         db.execSQL(
@@ -55,20 +56,20 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor res =  db.rawQuery( "select ders_photo_no from infos where ders_adi="+dersAdi, null );
+        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
         ContentValues contentValues = new ContentValues();
         int cureentPhotoNo = -1;
         res.moveToFirst();
         cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
         cureentPhotoNo++;
-        db.execSQL("update dersler set ders_photo_no="+cureentPhotoNo+" where ders_adi="+dersAdi);
+        db.execSQL("update dersler set ders_photo_no="+cureentPhotoNo+" where ders_adi='"+dersAdi+"'");
         db.close();
         return true;
     }
 
     public int getPhotoNo(String dersAdi) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi="+dersAdi, null );
+        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
         int cureentPhotoNo = -1;
         res.moveToFirst();
         cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
@@ -92,6 +93,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insertFirstRow (SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("university_name", "Bilkent");
+        boolean isStorageExist = checkStorage();
+        if(isStorageExist)
+            contentValues.put("external_storage", 1);
+        else
+            contentValues.put("external_storage", 0);
         db.insert("infos", null, contentValues);
     }
 
@@ -100,6 +106,18 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("update infos set university_name='"+uni+"',nick_name='"+nick+"',bulut="+bulut+" where id=1");
         db.close();
+    }
+
+    public boolean getExternalStorageStatus() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select external_storage from infos", null );
+        res.moveToFirst();
+        int result = res.getInt(res.getColumnIndex("external_storage"));
+        db.close();
+        if(result == 1)
+            return true;
+        else
+            return false;
     }
 
     public String getUniversityName() {
@@ -156,6 +174,37 @@ public class DBHelper extends SQLiteOpenHelper {
             db.close();
             return all;
         }
+    }
+
+    public String getCurrentDersAdi(String curDay,String bas, String son)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select * from dersler where ders_gunu='"+curDay+"' and ders_baslangic<='"+bas+"' and ders_bitis>='"+son+"'", null);
+
+        String dersAdi = "";
+        if(res.getCount() != 0)
+        {
+            if (res.moveToFirst())
+            {
+                dersAdi = res.getString(res.getColumnIndex("ders_adi"));
+            }
+        }
+        db.close();
+        return dersAdi;
+    }
+
+    private boolean checkStorage() {
+        boolean externalStorageReadable, externalStorageWritable;
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            externalStorageReadable = externalStorageWritable = true;
+        } else if (state.equals(Environment.MEDIA_MOUNTED) || state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+            externalStorageReadable = true;
+            externalStorageWritable = false;
+        } else {
+            externalStorageReadable = externalStorageWritable = false;
+        }
+        return externalStorageWritable;
     }
 
 

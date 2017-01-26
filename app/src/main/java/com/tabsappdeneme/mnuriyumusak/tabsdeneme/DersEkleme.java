@@ -50,6 +50,7 @@ public class DersEkleme extends Activity {
                 String nickName = nick.getText().toString();
                 int isBulut = (bulut.isChecked())?1:0;
                 mydb.addKayıtInfos(uniName,nickName,isBulut);
+
             }
         });
 
