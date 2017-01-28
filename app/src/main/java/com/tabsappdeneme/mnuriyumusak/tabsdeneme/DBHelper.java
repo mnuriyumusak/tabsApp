@@ -41,6 +41,16 @@ public class DBHelper extends SQLiteOpenHelper {
                         "(id integer primary key, ders_adi text ,ders_gunu text ,ders_baslangic text,ders_bitis text, ders_photo_no integer);"
         );
 
+        db.execSQL(
+                "create table drive_folders " +
+                        "(id integer primary key, folder_name text,folder_id text);"
+        );
+
+        db.execSQL(
+                "create table drive_files " +
+                        "(id integer primary key, file_name text,course_name text,is_uploaded integer);"
+        );
+
         insertFirstRow(db);
     }
 
@@ -88,6 +98,29 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("ders_photo_no", 0);
         db.insert("dersler", null, contentValues);
         db.close();
+    }
+
+    public void folderEkle(String folder_name, String folder_id)
+    {
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        contentValues.put("folder_name", folder_name);
+        contentValues.put("folder_id", folder_id);
+        db.insert("drive_folders", null, contentValues);
+        db.close();
+    }
+
+    public String getFolderId(String folder_name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select folder_id from drive_folders where folder_name='"+folder_name+"'", null );
+        String id = "";
+        if(res.getCount() != 0)
+        {
+            res.moveToFirst();
+            id = res.getString(res.getColumnIndex("folder_id"));
+        }
+        db.close();
+        return id;
     }
 
     public void insertFirstRow (SQLiteDatabase db) {
