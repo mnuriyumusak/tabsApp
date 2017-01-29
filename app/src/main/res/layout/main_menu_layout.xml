@@ -6,14 +6,23 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout_main">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <include layout="@layout/drawer_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
+
+        <TextView
+            android:text="Main Activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="192dp"
+            android:id="@+id/textView11"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="138dp" />
+    </RelativeLayout>
 
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"

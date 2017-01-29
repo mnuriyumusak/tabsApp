@@ -81,22 +81,38 @@ public class DersGirme  extends AppCompatActivity {
         myToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        TextView general_university_name = (TextView)  navigationView.getHeaderView(0).findViewById(R.id.university_name);
+        TextView general_nick_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.isim_nick);
+        general_university_name.setText(mydb.getUniversityName());
+        general_nick_name.setText(mydb.getNickName());
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                Intent intent;
                 switch(item.getItemId())
                 {
-                    case R.id.nav_settings:
-                        Intent intent = new Intent(DersGirme.this, MainActivity.class);
+                    case R.id.nav_main_activity:
+                        intent = new Intent(DersGirme.this, MainActivity.class);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
-                    case R.id.nav_account:
-                        Intent intent2 = new Intent(DersGirme.this, DersEkleme.class);
-                        startActivity(intent2);
+                    case R.id.nav_take_picture:
+                        intent = new Intent(DersGirme.this, CameraActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_girme:
+                        break;
+                    case R.id.nav_ders_ekleme:
+                        intent = new Intent(DersGirme.this, DersEkleme.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_drive_api:
+                        intent = new Intent(DersGirme.this, DriveApi.class);
+                        startActivity(intent);
                         item.setChecked(true);
                         break;
                 }

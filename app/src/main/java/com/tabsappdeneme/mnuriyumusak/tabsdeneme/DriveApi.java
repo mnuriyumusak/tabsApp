@@ -1,7 +1,16 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -17,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,7 +36,11 @@ import android.content.IntentSender.SendIntentException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,12 +54,13 @@ import com.google.android.gms.drive.DriveApi.DriveContentsResult;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.nearby.messages.Message;
 
 /**
  * Created by Nuri on 26.01.2017.
  */
 
-public class DriveApi extends Activity implements ConnectionCallbacks, OnConnectionFailedListener{
+public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener{
     private static final String TAG = "drive-quickstart";
     private static final int REQUEST_CODE_CAPTURE_IMAGE = 1;
     private static final int REQUEST_CODE_CREATOR = 2;
@@ -53,19 +69,107 @@ public class DriveApi extends Activity implements ConnectionCallbacks, OnConnect
 
     private GoogleApiClient mGoogleApiClient;
 
-
     private Class createFolder = CreateFolderAPI.class;
     private Class createInside = CreateFileInFolderActivity.class;
+
+    private Button buluta_yukle;
+    private TextView yuklenmemis_resim_sayisi;
+    private DBHelper mydb;
+
+
+    //drawer things
+    private DrawerLayout myDrawer;
+    private ActionBarDrawerToggle myToggle;
+    private Toolbar myToolBar;
+    private NavigationView navigationView;
+
+    //yukardaki soldaki menu butonuna basınca menünün açılması için
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(myToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drive_api_layout);
+        mydb = new DBHelper(this);
+
+
+        //drawer things
+        navigationView = (NavigationView) findViewById(R.id.navigation_view_drive_api);
+        myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_drive_api);
+        myToggle = new ActionBarDrawerToggle(this,myDrawer,R.string.open, R.string.close);
+        myToolBar = (Toolbar)  findViewById(R.id.nav_action);
+
+        setSupportActionBar(myToolBar);
+        myDrawer.addDrawerListener(myToggle);
+        myToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        TextView general_university_name = (TextView)  navigationView.getHeaderView(0).findViewById(R.id.university_name);
+        TextView general_nick_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.isim_nick);
+        general_university_name.setText(mydb.getUniversityName());
+        general_nick_name.setText(mydb.getNickName());
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                Intent intent;
+                switch(item.getItemId())
+                {
+                    case R.id.nav_main_activity:
+                        intent = new Intent(DriveApi.this, MainActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_take_picture:
+                        intent = new Intent(DriveApi.this, CameraActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_girme:
+                        intent = new Intent(DriveApi.this, DersGirme.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_ekleme:
+                        intent = new Intent(DriveApi.this, DersEkleme.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_drive_api:
+                        break;
+                }
+                return false;
+            }
+        });
+
+
+        buluta_yukle = (Button) findViewById(R.id.buluta_yukle);
+        yuklenmemis_resim_sayisi = (TextView) findViewById(R.id.yuklenmemis_resim_sayisi);
+        yuklenmemis_resim_sayisi.setText(""+mydb.getYuklenmemisResimSayisi());
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Drive.API)
                 .addScope(Drive.SCOPE_FILE)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        /*
+        if(isInternetWorking() && isWifiConnected())
+            Toast.makeText(getApplicationContext(),"internet açık, WİFİ",Toast.LENGTH_SHORT).show();
+        else if(isInternetWorking() && !isWifiConnected())
+            Toast.makeText(getApplicationContext(),"internet açık, data",Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(getApplicationContext(),"internet kaapli",Toast.LENGTH_SHORT).show();
+        */
+
     }
 
     @Override
@@ -114,5 +218,25 @@ public class DriveApi extends Activity implements ConnectionCallbacks, OnConnect
         // We are not connected anymore!
     }
 
+    public boolean isInternetWorking()
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isWifiConnected()
+    {
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (mWifi.isConnected())
+            return true;
+        else
+            return false;
+    }
+
 
 }
+
+
