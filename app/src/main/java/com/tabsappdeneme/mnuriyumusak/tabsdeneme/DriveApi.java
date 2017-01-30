@@ -2,6 +2,7 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -39,6 +41,7 @@ import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +95,6 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,20 +163,56 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        /*
-        if(isInternetWorking() && isWifiConnected())
-            Toast.makeText(getApplicationContext(),"internet açık, WİFİ",Toast.LENGTH_SHORT).show();
-        else if(isInternetWorking() && !isWifiConnected())
-            Toast.makeText(getApplicationContext(),"internet açık, data",Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(getApplicationContext(),"internet kaapli",Toast.LENGTH_SHORT).show();
-        */
+
+        buluta_yukle.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            if(!isInternetWorking())
+            {
+                Toast.makeText(getApplicationContext(),"Internet bağlı değil!",Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                if(!isWifiConnected())
+                {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+
+                                    Intent intent = new Intent(getBaseContext(), createFolder);
+                                    startActivity(intent);
+                                    break;
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DriveApi.this);
+                    builder.setMessage("WIFI kapalı,Data Paketi açık devam etmek istiyor musun?").setPositiveButton("Evet", dialogClickListener)
+                            .setNegativeButton("Hayır", dialogClickListener).show();
+                }
+                else
+                {
+                    Intent intent = new Intent(getBaseContext(), createFolder);
+                    startActivity(intent);
+                }
+            }
+            }
+        });
+
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
         mGoogleApiClient.connect();
     }
 
@@ -207,10 +245,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
 
     @Override
     public void onConnected(Bundle connectionHint) {
-
-        Intent intent = new Intent(getBaseContext(), createFolder);
-        startActivity(intent);
-
+        Toast.makeText(getApplicationContext(),"Drive hesabına bağlanıldı.",Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -259,14 +259,13 @@ public class DersGirme  extends AppCompatActivity {
                 String ders_adi = ders_harf.getText().toString().toUpperCase()+ders_rakam.getText().toString().toUpperCase();
                 mydb.dersEkle(ders_adi,gun,baslangic.getText().toString(),bitis.getText().toString());
                 Toast.makeText(getApplicationContext(),"Kaydedildi",Toast.LENGTH_SHORT).show();
-                gorSayfasinaEkle(ders_adi,gun, baslangic.getText().toString(), bitis.getText().toString());
+                gorSayfasiniYenile(gun);
                 baslangic.setText("");
                 bitis.setText("");
                 ders_harf.setText("");
                 ders_rakam.setText("");
             }
         });
-
     }
 
     public int getColor()
@@ -313,9 +312,23 @@ public class DersGirme  extends AppCompatActivity {
             t.setVisibility(View.INVISIBLE);
     }
 
+    public void gorSayfasiniYenile(String gun)
+    {
+        clearTextViews(gun);
+        ArrayList<String[]> all = mydb.getTumDersler(gun);
+        if(all.size() != 0)
+        {
+            for(int i = 0; i < all.get(0).length ; i++)
+            {
+                gorSayfasinaEkle(all.get(0)[i], all.get(1)[i], all.get(2)[i], all.get(3)[i]);
+            }
+
+        }
+    }
+
     public void gorSayfasiniOlustur()
     {
-        ArrayList<String[]> all = mydb.getTumDersler();
+        ArrayList<String[]> all = mydb.getTumDersler("");
         if(all.size() != 0)
         {
             for(int i = 0; i < all.get(0).length ; i++)
@@ -327,6 +340,35 @@ public class DersGirme  extends AppCompatActivity {
 
     }
 
+    public void clearTextViews(String gun)
+    {
+        if(gun.equalsIgnoreCase("pazartesi"))
+        {
+            for(int i = 0 ; i < 36 ; i+=5)
+                allTextViews[i].setText("");
+
+        }
+        else if(gun.equalsIgnoreCase("salı"))
+        {
+            for(int i = 1 ; i < 37 ; i+=5)
+                allTextViews[i].setText("");
+        }
+        else if(gun.equalsIgnoreCase("çarşamba"))
+        {
+            for(int i = 2 ; i < 38 ; i+=5)
+                allTextViews[i].setText("");
+        }
+        else if(gun.equalsIgnoreCase("perşembe"))
+        {
+            for(int i = 3 ; i < 39 ; i+=5)
+                allTextViews[i].setText("");
+        }
+        else if(gun.equalsIgnoreCase("cuma"))
+        {
+            for(int i = 4 ; i < 40 ; i+=5)
+                allTextViews[i].setText("");
+        }
+    }
     public void gorSayfasinaEkle(String dersAdi, String gun, String baslangic, String bitis)
     {
         ders_girilmemis.setVisibility(View.INVISIBLE);

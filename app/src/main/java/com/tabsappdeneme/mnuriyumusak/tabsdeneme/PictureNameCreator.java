@@ -85,7 +85,7 @@ public class PictureNameCreator{
                 picSavePath.mkdir();
             }
             String dersAdi = getDersAdi(mydb);
-            if(!dersAdi.equals("Tanimlanamayan"))
+            if(!dersAdi.equals("Tanimlanamayanlar"))
             {
                 picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/"+dersAdi);
             }
@@ -105,7 +105,7 @@ public class PictureNameCreator{
                 picSavePath.mkdir();
             }
             String dersAdi = getDersAdi(mydb);
-            if(!dersAdi.equals("Tanimlanamayan"))
+            if(!dersAdi.equals("Tanimlanamayanlar"))
             {
                 picSavePath2 = new File(externalPath + "/tabsApp/"+dersAdi);
             }

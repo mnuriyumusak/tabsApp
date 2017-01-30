@@ -38,81 +38,12 @@ public class AfterPicture extends AppCompatActivity {
     DBHelper mydb;
     private static final int CAM_REQUEST = 1313;
 
-    //drawer things
-    private DrawerLayout myDrawer;
-    private ActionBarDrawerToggle myToggle;
-    private Toolbar myToolBar;
-    private NavigationView navigationView;
-
-    //yukardaki soldaki menu butonuna basınca menünün açılması için
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(myToggle.onOptionsItemSelected(item))
-        {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.after_take_picture);
         mydb = new DBHelper(this);
-
-        //drawer things
-        navigationView = (NavigationView) findViewById(R.id.navigation_view_after_picture);
-        myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_after_picture);
-        myToggle = new ActionBarDrawerToggle(this,myDrawer,R.string.open, R.string.close);
-        myToolBar = (Toolbar)  findViewById(R.id.nav_action);
-
-        setSupportActionBar(myToolBar);
-        myDrawer.addDrawerListener(myToggle);
-        myToggle.syncState();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TextView general_university_name = (TextView)  navigationView.getHeaderView(0).findViewById(R.id.university_name);
-        TextView general_nick_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.isim_nick);
-        general_university_name.setText(mydb.getUniversityName());
-        general_nick_name.setText(mydb.getNickName());
-
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                Intent intent;
-                switch(item.getItemId())
-                {
-                    case R.id.nav_main_activity:
-                        intent = new Intent(AfterPicture.this, MainActivity.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_take_picture:
-                        intent = new Intent(AfterPicture.this, DersEkleme.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_ders_girme:
-                        intent = new Intent(AfterPicture.this, DersGirme.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_ders_ekleme:
-                        intent = new Intent(AfterPicture.this, DersEkleme.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_drive_api:
-                        intent = new Intent(AfterPicture.this, DriveApi.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                }
-                return false;
-            }
-        });
 
         File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
         pnc = new PictureNameCreator(externalPath);
@@ -139,7 +70,9 @@ public class AfterPicture extends AppCompatActivity {
         });
         kaydet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Kaydedildi",Toast.LENGTH_SHORT).show();
+                String photoName = pnc.getPictureName(mydb,false, true);
+                Toast.makeText(getApplicationContext(),"Kaydedildi"+photoName,Toast.LENGTH_SHORT).show();
+                mydb.addNewPhoto(photoName, pnc.getDersAdi(mydb));
             }
         });
     }

@@ -62,6 +62,24 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void addNewPhoto(String photoName, String courseName)
+    {
+        ContentValues contentValues = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        contentValues.put("file_name", photoName);
+        contentValues.put("course_name", courseName);
+        contentValues.put("is_uploaded", 0);
+        db.insert("drive_files", null, contentValues);
+        db.close();
+    }
+
+    public void photoDriveaYuklendi(String photoName)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update drive_files set is_uploaded=1 where file_name='"+photoName+"'");
+        db.close();
+    }
+
     public int getYuklenmemisResimSayisi()
     {
         int result = 0;
@@ -70,6 +88,31 @@ public class DBHelper extends SQLiteOpenHelper {
         result = res.getCount();
         db.close();
         return  result;
+    }
+
+    public ArrayList<String[]> getYuklenmemisResimler()
+    {
+        String[] fotoAdi = new String[getYuklenmemisResimSayisi()];
+        String[] dersAdi = new String[getYuklenmemisResimSayisi()];
+        ArrayList<String[]> all = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select * from drive_files where is_uploaded=0", null );
+        int index = 0;
+        if(res.getCount() != 0)
+        {
+            res.moveToFirst();
+            do {
+                fotoAdi[index] = res.getString(res.getColumnIndex("file_name"));
+                dersAdi[index] = res.getString(res.getColumnIndex("course_name"));
+                index++;
+            } while (res.moveToNext());
+            all.add(fotoAdi);
+            all.add(dersAdi);
+        }
+        else
+            all = null;
+        db.close();
+        return  all;
     }
 
     public boolean increasePhotoNo(String dersAdi)
@@ -152,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("infos", null, contentValues);
 
         ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("ders_adi", "Tanimlanamayan");
+        contentValues2.put("ders_adi", "Tanimlanamayanlar");
         contentValues2.put("ders_gunu", "");
         contentValues2.put("ders_baslangic", "");
         contentValues2.put("ders_bitis", "");
@@ -205,10 +248,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return name;
     }
 
-    public ArrayList<String[]> getTumDersler()
+    public ArrayList<String[]> getTumDersler(String bugun)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select * from dersler", null);
+        Cursor res;
+        if(bugun.equals(""))
+            res =  db.rawQuery( "select * from dersler ORDER BY ders_baslangic ASC", null);
+        else
+            res =  db.rawQuery( "select * from dersler where ders_gunu='"+bugun+"' ORDER BY ders_baslangic ASC", null);
+
         ArrayList<String[]> all = new ArrayList<>();
         int howMany = 0;
         howMany = res.getCount();
@@ -248,7 +296,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select * from dersler where ders_gunu='"+curDay+"' and ders_baslangic<='"+bas+"' and ders_bitis>='"+son+"'", null);
 
-        String dersAdi = "Tanimlanamayan";
+        String dersAdi = "Tanimlanamayanlar";
         if(res.getCount() != 0)
         {
             if (res.moveToFirst())
