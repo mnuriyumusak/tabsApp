@@ -37,13 +37,19 @@ public class AfterPicture extends AppCompatActivity {
     PictureNameCreator pnc;
     DBHelper mydb;
     private static final int CAM_REQUEST = 1313;
-
+    public boolean isTahtaFotosu ;
+    public String manuelDersAdi ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.after_take_picture);
         mydb = new DBHelper(this);
+
+        Bundle extras = getIntent().getExtras();
+        isTahtaFotosu = extras.getBoolean("isTahtaFotosu");
+        manuelDersAdi = extras.getString("manuelDersAdi");
+
 
         File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
         pnc = new PictureNameCreator(externalPath);
@@ -52,17 +58,17 @@ public class AfterPicture extends AppCompatActivity {
         yenidenCek = (Button) findViewById(R.id.yenidencek_button);
         kaydet = (Button) findViewById(R.id.ok_button);
 
-        File imageFile = pnc.getPictureImageFile(mydb,true,false);
+        File imageFile = pnc.getPictureImageFile(mydb,true,false,isTahtaFotosu,manuelDersAdi);
         Bitmap thumbnail = BitmapFactory.decodeFile(imageFile.getPath());
         imgTakenPhoto.setImageBitmap(thumbnail);
 
         yenidenCek.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                File imageFile = pnc.getPictureImageFile(mydb,true,false);
+                File imageFile = pnc.getPictureImageFile(mydb,true,false,isTahtaFotosu,manuelDersAdi);
                 imageFile.delete();
 
                 Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                Uri pictureUri = pnc.getPictureSavePath(mydb,true);
+                Uri pictureUri = pnc.getPictureSavePath(mydb,true,isTahtaFotosu,manuelDersAdi);
                 cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
                 startActivityForResult(cameraintent, CAM_REQUEST);
 
@@ -70,9 +76,9 @@ public class AfterPicture extends AppCompatActivity {
         });
         kaydet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String photoName = pnc.getPictureName(mydb,false, true);
+                String photoName = pnc.getPictureName(mydb,false, true,isTahtaFotosu,manuelDersAdi);
                 Toast.makeText(getApplicationContext(),"Kaydedildi"+photoName,Toast.LENGTH_SHORT).show();
-                mydb.addNewPhoto(photoName, pnc.getDersAdi(mydb));
+                mydb.addNewPhoto(photoName, pnc.getDersAdi(mydb),isTahtaFotosu);
             }
         });
     }

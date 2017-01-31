@@ -163,6 +163,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        mGoogleApiClient.connect();
 
         buluta_yukle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -181,7 +182,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                                 case DialogInterface.BUTTON_POSITIVE:
 
                                     Intent intent = new Intent(getBaseContext(), createFolder);
-                                    startActivity(intent);
+                                    startService(intent);
                                     break;
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     break;
@@ -207,13 +208,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        mGoogleApiClient.connect();
+
     }
 
     @Override
@@ -245,7 +240,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Toast.makeText(getApplicationContext(),"Drive hesabına bağlanıldı.",Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

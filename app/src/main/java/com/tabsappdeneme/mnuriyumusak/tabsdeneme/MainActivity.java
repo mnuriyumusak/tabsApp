@@ -1,9 +1,12 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +27,8 @@ public class MainActivity extends AppCompatActivity  {
     private Toolbar myToolBar;
     private NavigationView navigationView;
     DBHelper mydb;
-
+    private static final int CAM_REQUEST = 1313;
+    private boolean camOn = false;
 
 
     @Override
@@ -32,9 +36,6 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu_layout);
         mydb = new DBHelper(this);
-
-        Toast.makeText(getApplicationContext(),"durum:"+mydb.getExternalStorageStatus(),Toast.LENGTH_SHORT).show();
-
         navigationView = (NavigationView) findViewById(R.id.navigation_view_main);
         myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
         myToggle = new ActionBarDrawerToggle(this,myDrawer,R.string.open, R.string.close);
@@ -86,8 +87,34 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        /*
+        if(!camOn)
+        {
+            File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+            PictureNameCreator pnc = new PictureNameCreator(externalPath);
+            Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            Uri pictureUri = pnc.getPictureSavePath(mydb,false);
+            cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+            startActivityForResult(cameraintent, CAM_REQUEST);
+        }
+        */
     }
 
+    //başarılı bir çekim işleminin sonucu
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != Activity.RESULT_CANCELED)
+        {
+            // TODO Auto-generated method stub
+            super.onActivityResult(requestCode, resultCode, data);
+            if(requestCode == CAM_REQUEST)
+            {
+                Intent intent = new Intent(this, AfterPicture.class);
+                startActivity(intent);
+            }
+        }
+
+    }
 
     //yukardaki soldaki menu butonuna basınca menünün açılması için
     @Override

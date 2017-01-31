@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_main_activity"
-        android:icon="@mipmap/ic_note_add_black_24dp"
         android:title="Main Activity" />
+
     <item android:id="@+id/nav_take_picture"
-        android:title="Resim Çek" />
+        android:title="Resim Çek"
+        android:icon="@mipmap/ic_add_a_photo_black_24dp"/>
+
     <item android:id="@+id/nav_ders_girme"
-        android:title="Ders Ekle/Gör" />
+        android:title="Ders Ekle/Gör"
+        android:icon="@mipmap/ic_note_add_black_24dp" />
+
     <item android:id="@+id/nav_ders_ekleme"
-        android:title="Genel Bilgiler" />
+        android:title="Genel Bilgiler"
+        android:icon="@mipmap/ic_info_black_24dp"/>
+
     <item android:id="@+id/nav_drive_api"
-        android:title="Buluta Yükle" />
+        android:title="Buluta Yükle"
+        android:icon="@mipmap/ic_cloud_upload_black_24dp"/>
 </menu>

@@ -11,4 +11,36 @@
         android:id="@+id/progressBar3"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="İşlem Boyunca Lütfen Uygulamadan Çıkmayınız "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="51dp"
+        android:id="@+id/textView16"
+        android:textSize="17sp"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@+id/textView14"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Arka Plana Alabilirsiniz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:id="@+id/textView17"
+        android:textSize="17sp"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@+id/textView16"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Buluta Yükleniyor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView14"
+        android:layout_below="@+id/progressBar3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp" />
+
 </RelativeLayout>

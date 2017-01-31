@@ -38,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL(
                 "create table dersler " +
-                        "(id integer primary key, ders_adi text ,ders_gunu text ,ders_baslangic text,ders_bitis text, ders_photo_no integer);"
+                        "(id integer primary key, ders_adi text ,ders_gunu text ,ders_baslangic text,ders_bitis text, tahta_photo_no integer,not_photo_no integer);"
         );
 
         db.execSQL(
@@ -48,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL(
                 "create table drive_files " +
-                        "(id integer primary key, file_name text,course_name text,is_uploaded integer);"
+                        "(id integer primary key, file_name text,course_name text,is_uploaded integer,is_ders_notu integer);"
         );
 
         insertFirstRow(db);
@@ -62,13 +62,17 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addNewPhoto(String photoName, String courseName)
+    public void addNewPhoto(String photoName, String courseName, boolean isTahtaFotosu)
     {
         ContentValues contentValues = new ContentValues();
         SQLiteDatabase db = this.getWritableDatabase();
         contentValues.put("file_name", photoName);
         contentValues.put("course_name", courseName);
         contentValues.put("is_uploaded", 0);
+        if(isTahtaFotosu)
+            contentValues.put("is_ders_notu", 0);
+        else
+            contentValues.put("is_ders_notu", 1);
         db.insert("drive_files", null, contentValues);
         db.close();
     }
@@ -92,8 +96,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<String[]> getYuklenmemisResimler()
     {
-        String[] fotoAdi = new String[getYuklenmemisResimSayisi()];
-        String[] dersAdi = new String[getYuklenmemisResimSayisi()];
+        int boyut = getYuklenmemisResimSayisi();
+        String[] fotoAdi = new String[boyut];
+        String[] dersAdi = new String[boyut];
+        String[] is_ders_notu = new String [boyut];
+
         ArrayList<String[]> all = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select * from drive_files where is_uploaded=0", null );
@@ -104,10 +111,12 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 fotoAdi[index] = res.getString(res.getColumnIndex("file_name"));
                 dersAdi[index] = res.getString(res.getColumnIndex("course_name"));
+                is_ders_notu[index] = ""+res.getInt(res.getColumnIndex("is_ders_notu"));
                 index++;
             } while (res.moveToNext());
             all.add(fotoAdi);
             all.add(dersAdi);
+            all.add(is_ders_notu);
         }
         else
             all = null;
@@ -115,32 +124,49 @@ public class DBHelper extends SQLiteOpenHelper {
         return  all;
     }
 
-    public boolean increasePhotoNo(String dersAdi)
+    public boolean increasePhotoNo(String dersAdi, boolean isTahtaFotosu)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
+        Cursor res;
+        if(isTahtaFotosu)
+            res =  db.rawQuery( "select tahta_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
+        else
+            res =  db.rawQuery( "select not_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
+
         ContentValues contentValues = new ContentValues();
         int cureentPhotoNo = -1;
         if(res.getCount() != 0)
         {
             res.moveToFirst();
-            cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
+            if(isTahtaFotosu)
+                cureentPhotoNo = res.getInt(res.getColumnIndex("tahta_photo_no"));
+            else
+                cureentPhotoNo = res.getInt(res.getColumnIndex("not_photo_no"));
             cureentPhotoNo++;
-            db.execSQL("update dersler set ders_photo_no="+cureentPhotoNo+" where ders_adi='"+dersAdi+"'");
+            if(isTahtaFotosu)
+                db.execSQL("update dersler set tahta_photo_no="+cureentPhotoNo+" where ders_adi='"+dersAdi+"'");
+            else
+                db.execSQL("update dersler set not_photo_no="+cureentPhotoNo+" where ders_adi='"+dersAdi+"'");
         }
-
         db.close();
         return true;
     }
 
-    public int getPhotoNo(String dersAdi) {
+    public int getPhotoNo(String dersAdi, boolean isTahtaFotosu) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select ders_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
+        Cursor res;
+        if(isTahtaFotosu)
+            res =  db.rawQuery( "select tahta_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
+        else
+            res =  db.rawQuery( "select not_photo_no from dersler where ders_adi='"+dersAdi+"'", null );
         int cureentPhotoNo = 0;
         if(res.getCount() != 0)
         {
             res.moveToFirst();
-            cureentPhotoNo = res.getInt(res.getColumnIndex("ders_photo_no"));
+            if(isTahtaFotosu)
+                cureentPhotoNo = res.getInt(res.getColumnIndex("tahta_photo_no"));
+            else
+                cureentPhotoNo = res.getInt(res.getColumnIndex("not_photo_no"));
         }
         db.close();
         return cureentPhotoNo;
@@ -154,7 +180,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("ders_gunu", gun);
         contentValues.put("ders_baslangic", baslangic);
         contentValues.put("ders_bitis", bitis);
-        contentValues.put("ders_photo_no", 0);
+        contentValues.put("tahta_photo_no", 0);
+        contentValues.put("not_photo_no", 0);
         db.insert("dersler", null, contentValues);
         db.close();
     }
@@ -199,7 +226,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues2.put("ders_gunu", "");
         contentValues2.put("ders_baslangic", "");
         contentValues2.put("ders_bitis", "");
-        contentValues2.put("ders_photo_no", 0);
+        contentValues2.put("tahta_photo_no", 0);
+        contentValues2.put("not_photo_no", 0);
         db.insert("dersler", null, contentValues2);
     }
 

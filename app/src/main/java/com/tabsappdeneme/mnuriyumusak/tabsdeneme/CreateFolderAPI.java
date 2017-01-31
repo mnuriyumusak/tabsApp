@@ -11,8 +11,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.os.AsyncTaskCompat;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.*;
 
@@ -33,9 +35,12 @@ import java.util.ArrayList;
 
 public class CreateFolderAPI extends BaseDemoActivity{
     private DriveId mFolderDriveId = null;
+    private GoogleApiClient myGoogleApiClient;
     DBHelper mydb;
     boolean dersExist = false;
-    private String rootFolderName = "TabsAPP12";
+    private String rootFolderName = "TabsAPP17";
+    private String tahtaSubFolder = "Tahta Fotograflari";
+    private String dersNotuSubFolder = "Ders Notlari";
     ArrayList<String[]> all;
     ArrayList<String[]> yuklenmemisResimler;
     String[] tumDersAdlari;
@@ -44,7 +49,8 @@ public class CreateFolderAPI extends BaseDemoActivity{
     int fotoIndex = 0;
     File sd;
     BitmapFactory.Options bmOptions;
-
+    String currentSubFolderName;
+    boolean inside=false;
     public boolean isTabsAPPFolderExist()
     {
         boolean result = true;
@@ -80,6 +86,30 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
     }
 
+    public void createTahtaFotosuFolder()
+    {
+        DriveId myid = DriveId.decodeFromString(mydb.getFolderId(currentDersAdi));
+        mFolderDriveId = myid;
+        DriveFolder folder = myid.asDriveFolder();
+        currentSubFolderName = tahtaSubFolder;
+        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                .setTitle(currentSubFolderName).build();
+        folder.createFolder(myGoogleApiClient, changeSet)
+                .setResultCallback(createSubFolderCallback);
+    }
+
+    public void createDersNotuFolder()
+    {
+        DriveId myid = DriveId.decodeFromString(mydb.getFolderId(currentDersAdi));
+        mFolderDriveId = myid;
+        DriveFolder folder = myid.asDriveFolder();
+        currentSubFolderName = dersNotuSubFolder;
+        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                .setTitle(currentSubFolderName).build();
+        folder.createFolder(myGoogleApiClient, changeSet)
+                .setResultCallback(createSubFolderCallback);
+    }
+
     public void createDersFolders()
     {
         if(!dersExist)
@@ -89,7 +119,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
             DriveFolder folder = myid.asDriveFolder();
             MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                     .setTitle(currentDersAdi).build();
-            folder.createFolder(getGoogleApiClient(), changeSet)
+            folder.createFolder(myGoogleApiClient, changeSet)
                     .setResultCallback(createFolderCallback);
 
         }
@@ -108,8 +138,8 @@ public class CreateFolderAPI extends BaseDemoActivity{
     {
         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                 .setTitle(rootFolderName).build();
-        Drive.DriveApi.getRootFolder(getGoogleApiClient()).createFolder(
-                getGoogleApiClient(), changeSet).setResultCallback(callback);
+        Drive.DriveApi.getRootFolder(myGoogleApiClient).createFolder(
+                myGoogleApiClient, changeSet).setResultCallback(callback);
     }
 
     public void isDersFolderExist(String rootFolder,String dersAdi)
@@ -123,7 +153,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
             Query query = new Query.Builder()
                     .addFilter(Filters.eq(SearchableField.TITLE, dersAdi))
                     .build();
-            folder.queryChildren(getGoogleApiClient(), query)
+            folder.queryChildren(myGoogleApiClient, query)
                     .setResultCallback(metadataCallback);
 
         }catch (IllegalArgumentException e)
@@ -132,69 +162,90 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
     }
 
+
+
     public void onConnected(Bundle connectionHint) {
         super.onConnected(connectionHint);
-        mydb = new DBHelper(this);
-        all = mydb.getTumDersler("");
-        tumDersAdlari = all.get(0);
-        currentDersAdi = tumDersAdlari[index];
-        yuklenmemisResimler = mydb.getYuklenmemisResimler();
-        sd = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-        bmOptions = new BitmapFactory.Options();
-        fotoIndex = 0;
+        setContentView(R.layout.bulut_yukleme_ekrani);
+        if(!inside)
+        {
+            mydb = new DBHelper(this);
+            all = mydb.getTumDersler("");
+            tumDersAdlari = all.get(0);
+            currentDersAdi = tumDersAdlari[index];
+            yuklenmemisResimler = mydb.getYuklenmemisResimler();
+            sd = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+            bmOptions = new BitmapFactory.Options();
+            fotoIndex = 0;
+            inside = true;
+            myGoogleApiClient = getGoogleApiClient();
 
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                createAllFolders();
-                uploadImages();
-            }
-        });
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    createAllFolders();
+                    uploadImages();
+                }
+            });
+        }
     }
 
     public void uploadImages()
     {
-        if(yuklenmemisResimler!= null)
-        {
-            final int arrayIndex = fotoIndex;
-            File image = new File(sd+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex], yuklenmemisResimler.get(0)[arrayIndex]);
-            final Bitmap bitmapImage = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-            Drive.DriveApi.newDriveContents(getGoogleApiClient())
-                    .setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {
-                        @Override
-                        public void onResult(DriveApi.DriveContentsResult result) {
-                            if (!result.getStatus().isSuccess()) {
-                                return;
-                            }
-                            OutputStream outputStream = result.getDriveContents().getOutputStream();
-                            ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
-                            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
-                            try {
-                                outputStream.write(bitmapStream.toByteArray());
-                            } catch (IOException e1) {
-                            }
-                            MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
-                                    .setMimeType("image/jpeg").setTitle(yuklenmemisResimler.get(0)[arrayIndex]).build();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(yuklenmemisResimler!= null)
+                {
+                    final int arrayIndex = fotoIndex;
+                    final String subFolder;
+                    if(yuklenmemisResimler.get(2)[arrayIndex].equals("0"))
+                        subFolder = tahtaSubFolder;
+                    else
+                        subFolder = dersNotuSubFolder;
 
-                            DriveId myid = DriveId.decodeFromString(mydb.getFolderId(yuklenmemisResimler.get(1)[arrayIndex]));
-                            mFolderDriveId = myid;
-                            DriveFolder folder = myid.asDriveFolder();
-                            folder.createFile(getGoogleApiClient(),metadataChangeSet,result.getDriveContents());
-                            mydb.photoDriveaYuklendi(yuklenmemisResimler.get(0)[arrayIndex]);
-                            fotoIndex++;
-                            if(fotoIndex < yuklenmemisResimler.get(0).length)
-                            {
-                                uploadImages();
-                            }
-                            else
-                            {
-                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                startActivity(intent);
-                                return;
-                            }
-                        }
-                    });
-        }
+                    File image = new File(sd+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex]+"/"+subFolder, yuklenmemisResimler.get(0)[arrayIndex]);
+                    final Bitmap bitmapImage = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+                    Drive.DriveApi.newDriveContents(myGoogleApiClient)
+                            .setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {
+                                @Override
+                                public void onResult(DriveApi.DriveContentsResult result) {
+                                    if (!result.getStatus().isSuccess()) {
+                                        return;
+                                    }
+                                    OutputStream outputStream = result.getDriveContents().getOutputStream();
+                                    ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
+                                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
+                                    try {
+                                        outputStream.write(bitmapStream.toByteArray());
+                                    } catch (IOException e1) {
+                                    }
+                                    MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
+                                            .setMimeType("image/jpeg").setTitle(yuklenmemisResimler.get(0)[arrayIndex]).build();
+
+
+                                    DriveId myid = DriveId.decodeFromString(mydb.getFolderId(yuklenmemisResimler.get(1)[arrayIndex]+"-"+subFolder));
+                                    mFolderDriveId = myid;
+                                    DriveFolder folder = myid.asDriveFolder();
+                                    folder.createFile(myGoogleApiClient,metadataChangeSet,result.getDriveContents());
+                                    mydb.photoDriveaYuklendi(yuklenmemisResimler.get(0)[arrayIndex]);
+                                    fotoIndex++;
+                                    if(fotoIndex < yuklenmemisResimler.get(0).length)
+                                    {
+                                        uploadImages();
+                                    }
+                                    else
+                                    {
+                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                        startActivity(intent);
+                                        return;
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+
     }
 
     final ResultCallback<DriveFolder.DriveFolderResult> callback = new ResultCallback<DriveFolder.DriveFolderResult>() {
@@ -230,7 +281,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
                             .setTitle("New file")
                             .setMimeType("image/jpg")
                             .setStarred(true).build();
-                    folder.createFile(getGoogleApiClient(), changeSet, result.getDriveContents())
+                    folder.createFile(myGoogleApiClient, changeSet, result.getDriveContents())
                             .setResultCallback(fileCallback);
                     return;
                 }
@@ -274,13 +325,31 @@ public class CreateFolderAPI extends BaseDemoActivity{
                         return;
                     }
                     mydb.folderEkle(currentDersAdi, result.getDriveFolder().getDriveId().encodeToString());
-                    if(index < tumDersAdlari.length)
-                    {
-                        currentDersAdi = tumDersAdlari[index];
-                        index++;
-                        isDersFolderExist(rootFolderName,currentDersAdi);
-                    }
+                    createTahtaFotosuFolder();
                     return;
+                }
+            };
+
+    final ResultCallback<DriveFolderResult> createSubFolderCallback = new
+            ResultCallback<DriveFolderResult>() {
+                @Override
+                public void onResult(DriveFolderResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        return;
+                    }
+                    mydb.folderEkle(currentDersAdi+"-"+currentSubFolderName, result.getDriveFolder().getDriveId().encodeToString());
+                    if(currentSubFolderName.equals(dersNotuSubFolder))
+                    {
+                        if(index < tumDersAdlari.length)
+                        {
+                            currentDersAdi = tumDersAdlari[index];
+                            index++;
+                            isDersFolderExist(rootFolderName,currentDersAdi);
+                        }
+                        return;
+                    }
+                    else
+                        createDersNotuFolder();
                 }
             };
 

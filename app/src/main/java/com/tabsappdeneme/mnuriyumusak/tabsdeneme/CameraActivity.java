@@ -1,7 +1,12 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,16 +17,21 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,12 +45,11 @@ import java.util.EventListener;
 public class CameraActivity extends AppCompatActivity {
 
     DBHelper mydb;
-    Button ekleye_git;
     Button btnTakePhoto; //foto çekme butonu
+    ImageButton ders_notu_cek;
     ImageView imgTakenPhoto; //fonun çekilince nerde gösterileceği
     private static final int CAM_REQUEST = 1313;
     PictureNameCreator pnc;
-
 
     //drawer things
     private DrawerLayout myDrawer;
@@ -124,17 +133,34 @@ public class CameraActivity extends AppCompatActivity {
             requestPerms();
         }
 
-        ekleye_git = (Button) findViewById(R.id.git);
         btnTakePhoto = (Button) findViewById(R.id.cek_button);
         imgTakenPhoto = (ImageView) findViewById(R.id.imageview1);
         btnTakePhoto.setOnClickListener(new btnTakePhotoClicker());
+        ders_notu_cek = (ImageButton) findViewById(R.id.not_cek_image);
 
+        final GestureDetector gestureDetector = new GestureDetector(this, new SingleTapConfirm());
 
-        ekleye_git.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(CameraActivity.this, DersGirme.class);
-                startActivity(intent);
+        ders_notu_cek.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (gestureDetector.onTouchEvent(event)) {
+                    Intent intent = new Intent(CameraActivity.this, CameraActivityDersNotu.class);
+                    startActivity(intent);
+                    return true;
+                } else {
+                    // your code for move and drag
+                }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        ders_notu_cek.setColorFilter(Color.argb(255, 208, 234, 204));
+                        return true; // if you want to handle the touch event
+                    case MotionEvent.ACTION_UP:
+                        ders_notu_cek.clearColorFilter(); // White Tint
+                        return true; // if you want to handle the touch event
+                }
+                return false;
             }
+
         });
     }
 
@@ -146,9 +172,12 @@ public class CameraActivity extends AppCompatActivity {
         if(requestCode == CAM_REQUEST)
         {
             Intent intent = new Intent(this, AfterPicture.class);
+            intent.putExtra("isTahtaFotosu", true);
+            intent.putExtra("manuelDersAdi", "");
             startActivity(intent);
         }
     }
+
 
 
     private boolean hasPermissions(){
@@ -179,15 +208,19 @@ public class CameraActivity extends AppCompatActivity {
         public void onClick(View v) {
             // TODO Auto-generated method stub
             Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri pictureUri = pnc.getPictureSavePath(mydb,false);
-            Toast.makeText(getApplicationContext(),"Kaydedildi"+pictureUri.getPath().toString(),Toast.LENGTH_LONG).show();
+            Uri pictureUri = pnc.getPictureSavePath(mydb,false,true,"");
             cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
             startActivityForResult(cameraintent, CAM_REQUEST);
         }
+    }
 
 
+    private class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
 
-
+        @Override
+        public boolean onSingleTapUp(MotionEvent event) {
+            return true;
+        }
     }
 
 

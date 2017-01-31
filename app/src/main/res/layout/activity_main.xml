@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,21 +33,42 @@
                 android:layout_above="@+id/cek_button" />
 
             <Button android:id="@+id/cek_button"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="FOTO ÇEK"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
-
-            <Button
-                android:text="eklemeye git"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
+                android:layout_width="150dp"
+                android:background="@drawable/foto_cek_button"
                 android:layout_alignParentTop="true"
-                android:layout_alignEnd="@+id/cek_button"
-                android:layout_marginEnd="27dp"
-                android:layout_marginTop="169dp"
-                android:id="@+id/git" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="90dp" />
+
+            <TextView
+                android:text="Tahtayı Çek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView4"
+                android:textSize="18sp"
+                android:layout_alignTop="@+id/cek_button"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="139dp" />
+
+            <TextView
+                android:text="Ders Notu Çek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView5"
+                android:textSize="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="35dp" />
+
+            <ImageButton
+                app:srcCompat="@mipmap/ic_description_black_24dp"
+                android:id="@+id/not_cek_image"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:scaleType="fitCenter"
+                android:layout_above="@+id/textView5"
+                android:layout_alignStart="@+id/cek_button" />
 
         </RelativeLayout>
     </RelativeLayout>

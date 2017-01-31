@@ -19,6 +19,8 @@ import java.util.StringTokenizer;
 
 public class PictureNameCreator{
     private File externalPath;
+    private String tahtaSubFolder = "Tahta Fotograflari";
+    private String dersNotuSubFolder = "Ders Notlari";
 
     public PictureNameCreator(File externalPath)
     {
@@ -57,26 +59,34 @@ public class PictureNameCreator{
         return dersAdi;
     }
 
-    public String getPictureName(DBHelper mydb, boolean isIncrease, boolean isOldName)
+    public String getPictureName(DBHelper mydb, boolean isIncrease, boolean isOldName, boolean isTahtaFotosu,String manuelDersAdi)
     {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String timestamp = sdf.format(new Date());
         String oldName = "";
-        String dersAdi =  getDersAdi(mydb);
-        int photoNo = mydb.getPhotoNo(dersAdi);
+        String dersAdi;
+
+        if(manuelDersAdi.equals(""))
+            dersAdi=  getDersAdi(mydb);
+        else
+            dersAdi = manuelDersAdi;
+
+        int photoNo = mydb.getPhotoNo(dersAdi,isTahtaFotosu);
         if(isIncrease)
-            mydb.increasePhotoNo(dersAdi);
+            mydb.increasePhotoNo(dersAdi,isTahtaFotosu);
         if(isOldName)
             photoNo--;
         oldName = "" + dersAdi + "-" + photoNo + "-" + timestamp + ".jpg";
         return oldName;
     }
 
-    public File getPictureImageFile(DBHelper mydb,boolean isOldName,boolean isIncrease)
+    public File getPictureImageFile(DBHelper mydb,boolean isOldName,boolean isIncrease,boolean isTahtaFotosu,String manuelDersAdi)
     {
         //creating folders
+        File picSavePath3;
         File picSavePath2;
         File picSavePath;
+        String dersAdi;
         if(!mydb.getExternalStorageStatus())
         {
             picSavePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp");
@@ -84,7 +94,12 @@ public class PictureNameCreator{
             {
                 picSavePath.mkdir();
             }
-            String dersAdi = getDersAdi(mydb);
+
+            if(manuelDersAdi.equals(""))
+                dersAdi= getDersAdi(mydb);
+            else
+                dersAdi = manuelDersAdi;
+
             if(!dersAdi.equals("Tanimlanamayanlar"))
             {
                 picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/"+dersAdi);
@@ -93,9 +108,17 @@ public class PictureNameCreator{
             {
                 picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/Tanimlanamayanlar");
             }
+            if(isTahtaFotosu)
+                picSavePath3 = new File (picSavePath2.getPath() +"/"+tahtaSubFolder);
+            else
+                picSavePath3 = new File (picSavePath2.getPath() +"/"+dersNotuSubFolder);
             if(!picSavePath2.exists())
             {
                 picSavePath2.mkdir();
+            }
+            if(!picSavePath3.exists())
+            {
+                picSavePath3.mkdir();
             }
         }
         else //sdcard a yazar
@@ -104,7 +127,12 @@ public class PictureNameCreator{
             if (!picSavePath.exists()) {
                 picSavePath.mkdir();
             }
-            String dersAdi = getDersAdi(mydb);
+
+            if(manuelDersAdi.equals(""))
+                dersAdi= getDersAdi(mydb);
+            else
+                dersAdi = manuelDersAdi;
+
             if(!dersAdi.equals("Tanimlanamayanlar"))
             {
                 picSavePath2 = new File(externalPath + "/tabsApp/"+dersAdi);
@@ -113,23 +141,31 @@ public class PictureNameCreator{
             {
                 picSavePath2 = new File(externalPath + "/tabsApp/Tanimlanamayanlar");
             }
+            if(isTahtaFotosu)
+                picSavePath3 = new File (picSavePath2.getPath() +"/"+tahtaSubFolder);
+            else
+                picSavePath3 = new File (picSavePath2.getPath() +"/"+dersNotuSubFolder);
             if(!picSavePath2.exists())
             {
                 picSavePath2.mkdir();
             }
+            if(!picSavePath3.exists())
+            {
+                picSavePath3.mkdir();
+            }
         }
-        String picName = getPictureName(mydb,isIncrease,isOldName);
-        File imageFile = new File(picSavePath2, picName);
+        String picName = getPictureName(mydb,isIncrease,isOldName,isTahtaFotosu,manuelDersAdi);
+        File imageFile = new File(picSavePath3, picName);
         return imageFile;
     }
 
-    public Uri getPictureSavePath(DBHelper mydb,boolean isDelete)
+    public Uri getPictureSavePath(DBHelper mydb,boolean isDelete,boolean isTahtaFotosu,String dersAdi)
     {
         File imageFile;
         if(!isDelete)
-            imageFile = getPictureImageFile(mydb,false,true);
+            imageFile = getPictureImageFile(mydb,false,true,isTahtaFotosu,dersAdi);
         else
-            imageFile = getPictureImageFile(mydb,true,false);
+            imageFile = getPictureImageFile(mydb,true,false,isTahtaFotosu,dersAdi);
 
         Uri pictureUri = Uri.fromFile(imageFile);
         return pictureUri;
