@@ -38,9 +38,13 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventListener;
+import java.util.HashSet;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -56,6 +60,8 @@ public class CameraActivity extends AppCompatActivity {
     private ActionBarDrawerToggle myToggle;
     private Toolbar myToolBar;
     private NavigationView navigationView;
+
+
 
     //yukardaki soldaki menu butonuna basınca menünün açılması için
     @Override
@@ -162,6 +168,8 @@ public class CameraActivity extends AppCompatActivity {
             }
 
         });
+
+
     }
 
     //başarılı bir çekim işleminin sonucu

@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -195,14 +196,16 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                 }
                 else
                 {
-                    Intent intent = new Intent(getBaseContext(), createFolder);
+                    CreateFolderAPI a = new CreateFolderAPI(mydb,getExternalFilesDir(Environment.DIRECTORY_DCIM),mGoogleApiClient);
+                    Toast.makeText(getApplicationContext(),"Yükleniyor, Lütfen Uygulamadan Çıkmayınız, Arka Plana Alabilirsiniz",Toast.LENGTH_SHORT).show();
+                    a.doTaskBabe();
+
+                    Intent intent = new Intent(getBaseContext(), DriveYukleniyor.class);
                     startActivity(intent);
                 }
             }
             }
         });
-
-
     }
 
     @Override

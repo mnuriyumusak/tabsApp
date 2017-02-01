@@ -43,4 +43,23 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp" />
 
+    <TextView
+        android:text="15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/kalan_sayisi"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/textView20"
+        android:layout_alignBottom="@+id/textView20"
+        android:layout_toEndOf="@+id/textView14" />
+
+    <TextView
+        android:text="Kalan Resim Sayısı:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:id="@+id/textView20"
+        android:layout_below="@+id/textView14"
+        android:layout_toStartOf="@+id/kalan_sayisi" />
+
 </RelativeLayout>

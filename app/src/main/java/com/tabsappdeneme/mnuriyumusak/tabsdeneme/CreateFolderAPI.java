@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.os.AsyncTaskCompat;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,19 +39,29 @@ public class CreateFolderAPI extends BaseDemoActivity{
     private GoogleApiClient myGoogleApiClient;
     DBHelper mydb;
     boolean dersExist = false;
-    private String rootFolderName = "TabsAPP17";
+    private String rootFolderName = "TabsAPP37";
     private String tahtaSubFolder = "Tahta Fotograflari";
     private String dersNotuSubFolder = "Ders Notlari";
     ArrayList<String[]> all;
     ArrayList<String[]> yuklenmemisResimler;
     String[] tumDersAdlari;
     String currentDersAdi;
-    int index = 0;
+    public int index = 0;
     int fotoIndex = 0;
     File sd;
     BitmapFactory.Options bmOptions;
     String currentSubFolderName;
     boolean inside=false;
+    boolean continueBabe = false;
+
+    //upload images
+    OutputStream outputStream;
+    ByteArrayOutputStream bitmapStream;
+    File image;
+    Bitmap bitmapImage;
+    DriveApi.DriveContentsResult myResult;
+    DriveFolder myFolder;
+    MetadataChangeSet myMetadataChangeSet;
     public boolean isTabsAPPFolderExist()
     {
         boolean result = true;
@@ -131,6 +142,9 @@ public class CreateFolderAPI extends BaseDemoActivity{
                 index++;
                 isDersFolderExist(rootFolderName,currentDersAdi);
             }
+            else
+                uploadImages();
+
         }
     }
 
@@ -162,89 +176,129 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
     }
 
-
-
-    public void onConnected(Bundle connectionHint) {
-        super.onConnected(connectionHint);
-        setContentView(R.layout.bulut_yukleme_ekrani);
+    public CreateFolderAPI(DBHelper db,File mysd,GoogleApiClient client)
+    {
+        mydb = db;
+        sd = mysd;
+        all = mydb.getTumDersler("");
+        tumDersAdlari = all.get(0);
+        currentDersAdi = tumDersAdlari[index];
+        yuklenmemisResimler = mydb.getResimler(false);
+        bmOptions = new BitmapFactory.Options();
+        fotoIndex = 0;
+        myGoogleApiClient = client;
+    }
+    public void doTaskBabe( )
+    {
         if(!inside)
         {
-            mydb = new DBHelper(this);
-            all = mydb.getTumDersler("");
-            tumDersAdlari = all.get(0);
-            currentDersAdi = tumDersAdlari[index];
-            yuklenmemisResimler = mydb.getYuklenmemisResimler();
-            sd = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-            bmOptions = new BitmapFactory.Options();
-            fotoIndex = 0;
             inside = true;
-            myGoogleApiClient = getGoogleApiClient();
-
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     createAllFolders();
-                    uploadImages();
                 }
             });
         }
     }
 
+    public void onConnected(Bundle connectionHint) {
+        //super.onConnected(connectionHint);
+        //setContentView(R.layout.bulut_yukleme_ekrani);
+
+        if(!inside)
+        {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mydb = new DBHelper(CreateFolderAPI.this);
+                    all = mydb.getTumDersler("");
+                    tumDersAdlari = all.get(0);
+                    currentDersAdi = tumDersAdlari[index];
+                    yuklenmemisResimler = mydb.getResimler(false);
+                    sd = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+                    bmOptions = new BitmapFactory.Options();
+                    fotoIndex = 0;
+                    inside = true;
+                    myGoogleApiClient = getGoogleApiClient();
+                    createAllFolders();
+                }
+            });
+        }
+    }
+
+    public void uploadImagesSupport()
+    {
+        if(continueBabe)
+        {
+
+            uploadImages();
+        }
+        else
+        {
+
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+        }
+
+    }
+
     public void uploadImages()
     {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(yuklenmemisResimler!= null)
-                {
-                    final int arrayIndex = fotoIndex;
-                    final String subFolder;
-                    if(yuklenmemisResimler.get(2)[arrayIndex].equals("0"))
-                        subFolder = tahtaSubFolder;
-                    else
-                        subFolder = dersNotuSubFolder;
+        if(yuklenmemisResimler!= null)
+        {
+            continueBabe = false;
+            final int arrayIndex = fotoIndex;
+            final String subFolder;
+            if(yuklenmemisResimler.get(2)[arrayIndex].equals("0"))
+                subFolder = tahtaSubFolder;
+            else
+                subFolder = dersNotuSubFolder;
 
-                    File image = new File(sd+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex]+"/"+subFolder, yuklenmemisResimler.get(0)[arrayIndex]);
-                    final Bitmap bitmapImage = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-                    Drive.DriveApi.newDriveContents(myGoogleApiClient)
-                            .setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {
-                                @Override
-                                public void onResult(DriveApi.DriveContentsResult result) {
-                                    if (!result.getStatus().isSuccess()) {
-                                        return;
-                                    }
-                                    OutputStream outputStream = result.getDriveContents().getOutputStream();
-                                    ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
-                                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
-                                    try {
-                                        outputStream.write(bitmapStream.toByteArray());
-                                    } catch (IOException e1) {
-                                    }
-                                    MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
-                                            .setMimeType("image/jpeg").setTitle(yuklenmemisResimler.get(0)[arrayIndex]).build();
+            image = new File(sd+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex]+"/"+subFolder, yuklenmemisResimler.get(0)[arrayIndex]);
+            bitmapImage = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+            Drive.DriveApi.newDriveContents(myGoogleApiClient)
+                    .setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {
+                        @Override
+                        public void onResult(DriveApi.DriveContentsResult result) {
+                            myResult = result;
+                            if (!result.getStatus().isSuccess()) {
+                                return;
+                            }
+                            outputStream = result.getDriveContents().getOutputStream();
+                            bitmapStream = new ByteArrayOutputStream();
+                            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
+                            try {
+                                outputStream.write(bitmapStream.toByteArray());
+                            } catch (IOException e1) {
+                            }
+                            myMetadataChangeSet = new MetadataChangeSet.Builder()
+                                    .setMimeType("image/jpeg").setTitle(yuklenmemisResimler.get(0)[arrayIndex]).build();
 
 
-                                    DriveId myid = DriveId.decodeFromString(mydb.getFolderId(yuklenmemisResimler.get(1)[arrayIndex]+"-"+subFolder));
-                                    mFolderDriveId = myid;
-                                    DriveFolder folder = myid.asDriveFolder();
-                                    folder.createFile(myGoogleApiClient,metadataChangeSet,result.getDriveContents());
-                                    mydb.photoDriveaYuklendi(yuklenmemisResimler.get(0)[arrayIndex]);
-                                    fotoIndex++;
-                                    if(fotoIndex < yuklenmemisResimler.get(0).length)
-                                    {
-                                        uploadImages();
-                                    }
-                                    else
-                                    {
-                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                        startActivity(intent);
-                                        return;
-                                    }
-                                }
-                            });
-                }
-            }
-        });
+                            DriveId myid = DriveId.decodeFromString(mydb.getFolderId(yuklenmemisResimler.get(1)[arrayIndex]+"-"+subFolder));
+                            mFolderDriveId = myid;
+                            myFolder = myid.asDriveFolder();
+                            myFolder.createFile(myGoogleApiClient,myMetadataChangeSet,myResult.getDriveContents());
+                            mydb.photoDriveaYuklendi(yuklenmemisResimler.get(0)[arrayIndex]);
+                            fotoIndex++;
+
+                            if(fotoIndex < yuklenmemisResimler.get(0).length)
+                            {
+                                continueBabe = true;
+                                uploadImagesSupport();
+                                return;
+                            }
+                            else
+                            {
+
+                                //Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                //startActivity(intent);
+                                return;
+                            }
+                        }
+                    });
+        }
 
     }
 
@@ -346,6 +400,8 @@ public class CreateFolderAPI extends BaseDemoActivity{
                             index++;
                             isDersFolderExist(rootFolderName,currentDersAdi);
                         }
+                        else
+                            uploadImages();
                         return;
                     }
                     else

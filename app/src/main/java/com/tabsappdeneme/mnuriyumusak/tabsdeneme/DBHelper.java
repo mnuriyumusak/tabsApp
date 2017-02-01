@@ -94,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return  result;
     }
 
-    public ArrayList<String[]> getYuklenmemisResimler()
+    public ArrayList<String[]> getResimler(boolean isTumResimler)
     {
         int boyut = getYuklenmemisResimSayisi();
         String[] fotoAdi = new String[boyut];
@@ -103,7 +103,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ArrayList<String[]> all = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res =  db.rawQuery( "select * from drive_files where is_uploaded=0", null );
+        Cursor res;
+        if(!isTumResimler)
+            res =  db.rawQuery( "select * from drive_files where is_uploaded=0", null );
+        else
+            res =  db.rawQuery( "select * from drive_files", null );
+
         int index = 0;
         if(res.getCount() != 0)
         {
@@ -347,7 +352,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } else {
             externalStorageReadable = externalStorageWritable = false;
         }
-        return externalStorageReadable;
+        return externalStorageWritable;
     }
 
 

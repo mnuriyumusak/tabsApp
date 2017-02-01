@@ -1,40 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tabsappdeneme.mnuriyumusak.tabsdeneme">
+    package="com.tabsappdeneme.mnuriyumusak.tabsdeneme"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:configChanges="orientation"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/my_icon"
         android:label="Tabs App"
+        android:largeHeap="true"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".CreateFileInFolderActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".CreateFolderAPI"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:name=".DriveYukleniyor"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".CameraActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -44,29 +38,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AfterPicture"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DersGirme"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".DersEkleme"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".DriveApi"
-            android:screenOrientation="portrait" >
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".CameraActivityDersNotu"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".GalleryActivity"
+            android:screenOrientation="portrait"></activity>
 
+        <activity android:name=".FullImageActivity">
+
+        </activity>
     </application>
 
 </manifest>
