@@ -5,21 +5,17 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
  */
 
 import android.content.Intent;
-import android.content.IntentSender;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.os.AsyncTaskCompat;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.*;
 
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveFolder.DriveFolderResult;
@@ -39,7 +35,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
     private GoogleApiClient myGoogleApiClient;
     DBHelper mydb;
     boolean dersExist = false;
-    private String rootFolderName = "TabsAPP37";
+    private String rootFolderName = "TabsAPP";
     private String tahtaSubFolder = "Tahta Fotograflari";
     private String dersNotuSubFolder = "Ders Notlari";
     ArrayList<String[]> all;
@@ -48,7 +44,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
     String currentDersAdi;
     public int index = 0;
     int fotoIndex = 0;
-    File sd;
+    File path;
     BitmapFactory.Options bmOptions;
     String currentSubFolderName;
     boolean inside=false;
@@ -86,7 +82,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
         else
         {
-            if(all.size() != 0)
+            if(all != null)
             {
                 index++;
                 isDersFolderExist(rootFolderName,currentDersAdi);
@@ -176,18 +172,19 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
     }
 
-    public CreateFolderAPI(DBHelper db,File mysd,GoogleApiClient client)
+    public CreateFolderAPI(DBHelper db,File myPath,GoogleApiClient client)
     {
+        path = myPath;
+        myGoogleApiClient = client;
         mydb = db;
-        sd = mysd;
         all = mydb.getTumDersler("");
         tumDersAdlari = all.get(0);
         currentDersAdi = tumDersAdlari[index];
-        yuklenmemisResimler = mydb.getResimler(false);
+        yuklenmemisResimler = mydb.getResimler("",false);
         bmOptions = new BitmapFactory.Options();
         fotoIndex = 0;
-        myGoogleApiClient = client;
     }
+
     public void doTaskBabe( )
     {
         if(!inside)
@@ -205,18 +202,17 @@ public class CreateFolderAPI extends BaseDemoActivity{
     public void onConnected(Bundle connectionHint) {
         //super.onConnected(connectionHint);
         //setContentView(R.layout.bulut_yukleme_ekrani);
-
+        /*
         if(!inside)
         {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    mydb = new DBHelper(CreateFolderAPI.this);
                     all = mydb.getTumDersler("");
                     tumDersAdlari = all.get(0);
                     currentDersAdi = tumDersAdlari[index];
-                    yuklenmemisResimler = mydb.getResimler(false);
-                    sd = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+                    yuklenmemisResimler = mydb.getResimler("",false);
+                    //path = getExternalFilesDir(Environment.DIRECTORY_DCIM);
                     bmOptions = new BitmapFactory.Options();
                     fotoIndex = 0;
                     inside = true;
@@ -225,6 +221,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
                 }
             });
         }
+        */
     }
 
     public void uploadImagesSupport()
@@ -255,7 +252,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
             else
                 subFolder = dersNotuSubFolder;
 
-            image = new File(sd+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex]+"/"+subFolder, yuklenmemisResimler.get(0)[arrayIndex]);
+            image = new File(path+"/tabsApp/"+yuklenmemisResimler.get(1)[arrayIndex]+"/"+subFolder, yuklenmemisResimler.get(0)[arrayIndex]);
             bitmapImage = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
             Drive.DriveApi.newDriveContents(myGoogleApiClient)
                     .setResultCallback(new ResultCallback<DriveApi.DriveContentsResult>() {

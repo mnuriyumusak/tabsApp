@@ -1,11 +1,11 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
-import android.app.Activity;
+
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
+
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -95,6 +94,7 @@ public class DersGirme  extends AppCompatActivity {
                 {
                     case R.id.nav_main_activity:
                         intent = new Intent(DersGirme.this, MainActivity.class);
+                        intent.putExtra("isFromAnother", true);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
@@ -103,8 +103,6 @@ public class DersGirme  extends AppCompatActivity {
                         startActivity(intent);
                         item.setChecked(true);
                         break;
-                    case R.id.nav_ders_girme:
-                        break;
                     case R.id.nav_ders_ekleme:
                         intent = new Intent(DersGirme.this, DersEkleme.class);
                         startActivity(intent);
@@ -112,6 +110,16 @@ public class DersGirme  extends AppCompatActivity {
                         break;
                     case R.id.nav_drive_api:
                         intent = new Intent(DersGirme.this, DriveApi.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_gallery:
+                        intent = new Intent(DersGirme.this, GalleryFolderActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(DersGirme.this, CreditsActivity.class);
                         startActivity(intent);
                         item.setChecked(true);
                         break;

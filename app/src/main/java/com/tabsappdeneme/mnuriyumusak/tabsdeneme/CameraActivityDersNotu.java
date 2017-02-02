@@ -1,30 +1,27 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
-import android.*;
-import android.content.DialogInterface;
+
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
+
 import android.net.Uri;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.os.Environment;
+
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.MotionEvent;
+
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,10 +89,14 @@ public class CameraActivityDersNotu extends AppCompatActivity {
                 {
                     case R.id.nav_main_activity:
                         intent = new Intent(CameraActivityDersNotu.this, MainActivity.class);
+                        intent.putExtra("isFromAnother", true);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
                     case R.id.nav_take_picture:
+                        intent = new Intent(CameraActivityDersNotu.this, CameraActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
                         break;
                     case R.id.nav_ders_girme:
                         intent = new Intent(CameraActivityDersNotu.this, DersGirme.class);
@@ -112,13 +113,23 @@ public class CameraActivityDersNotu extends AppCompatActivity {
                         startActivity(intent);
                         item.setChecked(true);
                         break;
+                    case R.id.nav_gallery:
+                        intent = new Intent(CameraActivityDersNotu.this, GalleryFolderActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(CameraActivityDersNotu.this, CreditsActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
                 }
                 return false;
             }
         });
 
 
-        File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        File externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
         pnc = new PictureNameCreator(externalPath);
 
         ders_notu_cek = (Button) findViewById(R.id.not_cek_foto_Cek);
@@ -140,7 +151,6 @@ public class CameraActivityDersNotu extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView parent, View view, int position, long id) {
                 String selected = (String) parent.getSelectedItem().toString();
-                Toast.makeText(getApplicationContext(),selected,Toast.LENGTH_SHORT).show();
                 selectedDers = selected;
             }
             @Override
@@ -172,7 +182,7 @@ public class CameraActivityDersNotu extends AppCompatActivity {
             // TODO Auto-generated method stub
             if(selectedDers == null)
             {
-                Toast.makeText(getApplicationContext(),"Seçim yapmanız gerekli null!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Seçim yapmanız gerekli!",Toast.LENGTH_SHORT).show();
             }
             else
             {

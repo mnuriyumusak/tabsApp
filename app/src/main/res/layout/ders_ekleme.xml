@@ -18,15 +18,6 @@
             android:orientation="vertical" android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:text="KAYDEt"
-                android:layout_height="wrap_content"
-                android:id="@+id/kaydet_button"
-                android:layout_width="300dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="37dp" />
-
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,18 +55,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="27dp"
-                android:id="@+id/bulut_switch"
+                android:id="@+id/sdkart_switch"
                 android:layout_marginTop="33dp"
                 android:layout_below="@+id/nick_field"
-                android:layout_toEndOf="@+id/textView3" />
+                android:layout_toEndOf="@+id/sdkart_yazisi" />
 
             <TextView
-                android:text="Otomatik Buluta At"
+                android:text="SD Karta Kaydet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView3"
-                android:layout_alignBaseline="@+id/bulut_switch"
-                android:layout_alignBottom="@+id/bulut_switch"
+                android:id="@+id/sdkart_yazisi"
+                android:layout_alignBaseline="@+id/sdkart_switch"
+                android:layout_alignBottom="@+id/sdkart_switch"
                 android:layout_alignStart="@+id/textView" />
 
             <Spinner
@@ -85,6 +76,18 @@
                 android:entries="@array/universiteler"
                 android:layout_alignBottom="@+id/textView2"
                 android:layout_alignParentEnd="true" />
+
+            <Button
+                android:text="KAYDEt"
+                android:layout_height="wrap_content"
+                android:id="@+id/kaydet_button"
+                android:layout_width="300dp"
+                android:layout_marginBottom="38dp"
+                android:padding="10dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/my_button"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
     </RelativeLayout>

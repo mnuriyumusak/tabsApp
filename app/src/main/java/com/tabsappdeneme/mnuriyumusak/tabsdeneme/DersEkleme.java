@@ -1,19 +1,15 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
-import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,15 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Nuri on 17.01.2017.
@@ -40,11 +31,12 @@ public class DersEkleme extends AppCompatActivity {
     Spinner university;
     String university_text;
     EditText nick;
-    Switch bulut;
+    Switch sdKart;
     private DBHelper mydb ;
 
     TextView general_university_name;
     TextView general_nick_name;
+    TextView sdkart_yazisi;
 
     //drawer things
     private DrawerLayout myDrawer;
@@ -69,6 +61,13 @@ public class DersEkleme extends AppCompatActivity {
         setContentView(R.layout.ders_ekleme);
         mydb = new DBHelper(this);
 
+        if(mydb.isIlkGiris())
+        {
+            if(!hasPermissions())
+            {
+                requestPerms();
+            }
+        }
 
         //drawer things
         navigationView = (NavigationView) findViewById(R.id.navigation_view_ders_ekleme);
@@ -88,31 +87,46 @@ public class DersEkleme extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 Intent intent;
-                switch(item.getItemId())
+                if(!mydb.isIlkGiris())
                 {
-                    case R.id.nav_main_activity:
-                        intent = new Intent(DersEkleme.this, MainActivity.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_take_picture:
-                        intent = new Intent(DersEkleme.this, CameraActivity.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_ders_girme:
-                        intent = new Intent(DersEkleme.this, DersGirme.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
-                    case R.id.nav_ders_ekleme:
-                        break;
-                    case R.id.nav_drive_api:
-                        intent = new Intent(DersEkleme.this, DriveApi.class);
-                        startActivity(intent);
-                        item.setChecked(true);
-                        break;
+                    switch(item.getItemId())
+                    {
+                        case R.id.nav_main_activity:
+                            intent = new Intent(DersEkleme.this, MainActivity.class);
+                            intent.putExtra("isFromAnother", true);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                        case R.id.nav_take_picture:
+                            intent = new Intent(DersEkleme.this, CameraActivity.class);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                        case R.id.nav_ders_girme:
+                            intent = new Intent(DersEkleme.this, DersGirme.class);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                        case R.id.nav_drive_api:
+                            intent = new Intent(DersEkleme.this, DriveApi.class);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                        case R.id.nav_gallery:
+                            intent = new Intent(DersEkleme.this, GalleryFolderActivity.class);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                        case R.id.nav_ders_hakkinda:
+                            intent = new Intent(DersEkleme.this, CreditsActivity.class);
+                            startActivity(intent);
+                            item.setChecked(true);
+                            break;
+                    }
                 }
+                else
+                    showWarning();
+
                 return false;
             }
         });
@@ -121,7 +135,15 @@ public class DersEkleme extends AppCompatActivity {
         kaydet_button = (Button) findViewById(R.id.kaydet_button);
         university = (Spinner) findViewById(R.id.university_field);
         nick = (EditText) findViewById(R.id.nick_field);
-        bulut = (Switch) findViewById(R.id.bulut_switch);
+        sdKart = (Switch) findViewById(R.id.sdkart_switch);
+        sdkart_yazisi = (TextView) findViewById(R.id.sdkart_yazisi);
+
+        if(!mydb.isIlkGiris())
+        {
+            sdkart_yazisi.setVisibility(View.INVISIBLE);
+            sdKart.setVisibility(View.INVISIBLE);
+        }
+
         general_university_name = (TextView)  navigationView.getHeaderView(0).findViewById(R.id.university_name);
         general_nick_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.isim_nick);
         general_university_name.setText(mydb.getUniversityName());
@@ -140,15 +162,68 @@ public class DersEkleme extends AppCompatActivity {
 
         kaydet_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String uniName = university_text;
-                String nickName = nick.getText().toString();
-                int isBulut = (bulut.isChecked())?1:0;
-                mydb.addKayıtInfos(uniName,nickName,isBulut);
-                general_university_name.setText(university_text);
-                general_nick_name.setText(nickName);
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                String uniName = university_text;
+                                String nickName = nick.getText().toString();
+                                int isSdKart = (sdKart.isChecked())?1:0;
+                                if(!mydb.getExternalStorageStatus())
+                                {
+                                    Toast.makeText(getApplicationContext(),"Telefonunuzda SD Kart Yok!",Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    mydb.addKayıtInfos(uniName,nickName,isSdKart);
+                                    general_university_name.setText(university_text);
+                                    general_nick_name.setText(nickName);
+                                    Intent intent = new Intent(DersEkleme.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(DersEkleme.this);
+                builder.setMessage("SD kart seçeneğini bir daha ASLA değiştiremeyeceksin, emin misin?").setPositiveButton("Evet", dialogClickListener)
+                        .setNegativeButton("Hayır", dialogClickListener).show();
             }
         });
 
 
+    }
+
+    private boolean hasPermissions(){
+        int res = 0;
+        //string array of permissions,
+        String[] permissions = new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.GET_ACCOUNTS,android.Manifest.permission.ACCESS_NETWORK_STATE,android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.INTERNET};
+
+        for (String perms : permissions){
+            res = checkCallingOrSelfPermission(perms);
+            if (!(res == PackageManager.PERMISSION_GRANTED)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void requestPerms(){
+        String[] permissions = new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.GET_ACCOUNTS,android.Manifest.permission.ACCESS_NETWORK_STATE,android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.INTERNET};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            requestPermissions(permissions,100);
+        }
+    }
+
+    public void showWarning()
+    {
+        Toast.makeText(getApplicationContext(),"Öncelikle bilgileriniz doldurmanız gerekiyor.",Toast.LENGTH_SHORT).show();
     }
 }

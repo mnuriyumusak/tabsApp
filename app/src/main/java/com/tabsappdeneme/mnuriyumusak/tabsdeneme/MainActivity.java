@@ -1,34 +1,72 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
+
 import android.os.Bundle;
+import android.os.Environment;
+
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import android.view.MenuItem;
 import android.widget.TextView;
 
 
-public class MainActivity extends AppCompatActivity  {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+
+import java.io.File;
+
+
+public class MainActivity extends AppCompatActivity  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private DrawerLayout myDrawer;
     private ActionBarDrawerToggle myToggle;
     private Toolbar myToolBar;
     private NavigationView navigationView;
     DBHelper mydb;
     private static final int CAM_REQUEST = 1313;
+    private static final int REQUEST_CODE_RESOLUTION = 3;
+    private GoogleApiClient mGoogleApiClient;
     private boolean camOn = false;
 
+    private TextView cekilen_resim_sayisi;
+    private TextView suanki_ders;
+    private boolean isFromAnother = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_menu_layout);
         mydb = new DBHelper(this);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null)
+            isFromAnother = bundle.getBoolean("isFromAnother");
+
+        if(mydb.isIlkGiris())
+        {
+            Intent intent = new Intent(MainActivity.this, DersEkleme.class);
+            startActivity(intent);
+        }
+        else
+        {
+            if(!isFromAnother)
+            {
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                startActivity(intent);
+            }
+        }
+
+        setContentView(R.layout.main_menu_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view_main);
         myDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_main);
         myToggle = new ActionBarDrawerToggle(this,myDrawer,R.string.open, R.string.close);
@@ -52,8 +90,6 @@ public class MainActivity extends AppCompatActivity  {
                 Intent intent;
                 switch(item.getItemId())
                 {
-                    case R.id.nav_main_activity:
-                        break;
                     case R.id.nav_take_picture:
                         intent = new Intent(MainActivity.this, CameraActivity.class);
                         startActivity(intent);
@@ -70,7 +106,17 @@ public class MainActivity extends AppCompatActivity  {
                         item.setChecked(true);
                         break;
                     case R.id.nav_drive_api:
-                        intent = new Intent(MainActivity.this, GalleryActivity.class);
+                        intent = new Intent(MainActivity.this, DriveApi.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_gallery:
+                        intent = new Intent(MainActivity.this, GalleryFolderActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(MainActivity.this, CreditsActivity.class);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
@@ -79,17 +125,15 @@ public class MainActivity extends AppCompatActivity  {
                 return false;
             }
         });
-        /*
-        if(!camOn)
-        {
-            File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-            PictureNameCreator pnc = new PictureNameCreator(externalPath);
-            Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri pictureUri = pnc.getPictureSavePath(mydb,false);
-            cameraintent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
-            startActivityForResult(cameraintent, CAM_REQUEST);
-        }
-        */
+
+        cekilen_resim_sayisi = (TextView) findViewById(R.id.cekilen_resim_sayisi);
+        cekilen_resim_sayisi.setText(""+mydb.getCekilenResimSayisi());
+        File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        PictureNameCreator pnc = new PictureNameCreator(externalPath);
+        suanki_ders = (TextView) findViewById(R.id.suanki_ders);
+        suanki_ders.setText(pnc.getDersAdi(mydb));
+
+
     }
 
 
@@ -117,5 +161,45 @@ public class MainActivity extends AppCompatActivity  {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Called whenever the API client fails to connect.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        if (!result.hasResolution()) {
+            // show the localized error dialog.
+            GoogleApiAvailability.getInstance().getErrorDialog(this, result.getErrorCode(), 0).show();
+            return;
+        }
+        // The failure has a resolution. Resolve it.
+        // Called typically when the app is not yet authorized, and an
+        // authorization
+        // dialog is displayed to the user.
+        try {
+            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        } catch (IntentSender.SendIntentException e) {
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // We are not connected anymore!
     }
 }

@@ -3,15 +3,15 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 
 import android.net.Uri;
-import android.os.Bundle;
+
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
+
 
 /**
  * Created by Nuri on 16.01.2017.
@@ -87,7 +87,7 @@ public class PictureNameCreator{
         File picSavePath2;
         File picSavePath;
         String dersAdi;
-        if(!mydb.getExternalStorageStatus())
+        if(!mydb.hasSDKart())
         {
             picSavePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp");
             if(!picSavePath.exists())
@@ -123,6 +123,9 @@ public class PictureNameCreator{
         }
         else //sdcard a yazar
         {
+            if (!externalPath.exists()) {
+                externalPath.mkdir();
+            }
             picSavePath = new File(externalPath + "/tabsApp");
             if (!picSavePath.exists()) {
                 picSavePath.mkdir();
@@ -145,6 +148,7 @@ public class PictureNameCreator{
                 picSavePath3 = new File (picSavePath2.getPath() +"/"+tahtaSubFolder);
             else
                 picSavePath3 = new File (picSavePath2.getPath() +"/"+dersNotuSubFolder);
+
             if(!picSavePath2.exists())
             {
                 picSavePath2.mkdir();

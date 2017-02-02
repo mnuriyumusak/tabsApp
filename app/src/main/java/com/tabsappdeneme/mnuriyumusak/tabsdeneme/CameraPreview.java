@@ -2,7 +2,6 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.nfc.Tag;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;

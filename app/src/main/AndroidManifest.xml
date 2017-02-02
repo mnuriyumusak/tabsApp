@@ -21,14 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CreateFileInFolderActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity
             android:name=".DriveYukleniyor"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CameraActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -51,17 +48,17 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".DriveApi"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".CameraActivityDersNotu"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".GalleryActivity"
-            android:screenOrientation="portrait"></activity>
-
-        <activity android:name=".FullImageActivity">
-
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GalleryFolderActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".CreditsActivity"></activity>
     </application>
 
 </manifest>

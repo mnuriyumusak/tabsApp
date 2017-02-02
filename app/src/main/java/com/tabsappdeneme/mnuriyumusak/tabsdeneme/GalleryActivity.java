@@ -1,22 +1,22 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import android.content.Intent;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.os.Environment;
+
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
+
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Nuri on 1.02.2017.
@@ -24,9 +24,16 @@ import java.io.File;
 
 public class GalleryActivity extends AppCompatActivity  {
 
-    private GridView myGrid;
-    private ImageAdapter myAdapter;
     DBHelper mydb;
+    GalleryAdapter mAdapter;
+    RecyclerView mRecyclerView;
+
+    private File imageFile;
+    private String tahtaSubFolder = "Tahta Fotograflari";
+    private String dersNotuSubFolder = "Ders Notlari";
+
+    private String secilenDersAdi;
+    private boolean isDersNotu;
 
     //drawer things
     private DrawerLayout myDrawer;
@@ -48,7 +55,10 @@ public class GalleryActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_layout);
+        Bundle bundle = getIntent().getExtras();
 
+        secilenDersAdi = bundle.getString("secilenDersAdi");
+        isDersNotu = bundle.getBoolean("isDersNotu");
 
         //drawer things
         navigationView = (NavigationView) findViewById(R.id.navigation_view_gallery);
@@ -72,6 +82,7 @@ public class GalleryActivity extends AppCompatActivity  {
                 {
                     case R.id.nav_main_activity:
                         intent = new Intent(GalleryActivity.this, MainActivity.class);
+                        intent.putExtra("isFromAnother", true);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
@@ -86,9 +97,17 @@ public class GalleryActivity extends AppCompatActivity  {
                         item.setChecked(true);
                         break;
                     case R.id.nav_ders_ekleme:
+                        intent = new Intent(GalleryActivity.this, DersEkleme.class);
+                        startActivity(intent);
+                        item.setChecked(true);
                         break;
                     case R.id.nav_drive_api:
                         intent = new Intent(GalleryActivity.this, DriveApi.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(GalleryActivity.this, CreditsActivity.class);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
@@ -98,21 +117,46 @@ public class GalleryActivity extends AppCompatActivity  {
         });
 
         mydb = new DBHelper(this);
-        myGrid = (GridView) findViewById(R.id.gallery_grid);
-        myAdapter = new ImageAdapter(this,mydb,getExternalFilesDir(Environment.DIRECTORY_DCIM));
-        myGrid.setAdapter(myAdapter);
 
-        myGrid.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        ArrayList<String[]> tumResimler = mydb.getResimler(secilenDersAdi,isDersNotu);
+        ArrayList<ImageModel> data = new ArrayList<>();
+        String[] IMGS = null;
+
+        File ext = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        String subFolder;
+        //gallery işleri burdan sonra başlıyor
+        if(tumResimler != null)
+        {
+            IMGS = new String[tumResimler.get(0).length];
+            for(int i = 0; i < tumResimler.get(0).length ; i++)
             {
-                Intent i = new Intent(getApplicationContext(),FullImageActivity.class);
-                i.putExtra("id",position);
-                Uri filePath = (Uri)myAdapter.getItem(position);
-                i.putExtra("path",filePath.getPath().toString());
-                startActivity(i);
+                if(tumResimler.get(2)[i].equals("0"))
+                    subFolder = tahtaSubFolder;
+                else
+                    subFolder = dersNotuSubFolder;
+
+                imageFile = new File(ext+"/tabsApp/"+tumResimler.get(1)[i]+"/"+subFolder, tumResimler.get(0)[i]);
+                IMGS[i] = imageFile.getPath().toString();
             }
-        });
+        }
+        if(IMGS != null)
+        {
+            for (int i = 0; i < IMGS.length; i++)
+            {
+                ImageModel imageModel = new ImageModel();
+                imageModel.setName("Image " + i);
+                imageModel.setUrl(IMGS[i]);
+                data.add(imageModel);
+            }
+        }
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.gallery_list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mRecyclerView.setHasFixedSize(true);
+
+
+        mAdapter = new GalleryAdapter(GalleryActivity.this, data);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 }

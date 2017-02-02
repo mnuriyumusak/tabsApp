@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_main_activity"
-        android:title="Main Activity" />
+        android:title="Ana Sayfa"
+        android:icon="@mipmap/ic_home_black_24dp"/>
 
     <item android:id="@+id/nav_take_picture"
         android:title="Resim Çek"
@@ -11,11 +12,19 @@
         android:title="Ders Ekle/Gör"
         android:icon="@mipmap/ic_note_add_black_24dp" />
 
-    <item android:id="@+id/nav_ders_ekleme"
-        android:title="Genel Bilgiler"
-        android:icon="@mipmap/ic_info_black_24dp"/>
+    <item android:id="@+id/nav_gallery"
+        android:title="Galeri"
+        android:icon="@mipmap/ic_photo_library_black_24dp"/>
 
     <item android:id="@+id/nav_drive_api"
         android:title="Buluta Yükle"
         android:icon="@mipmap/ic_cloud_upload_black_24dp"/>
+
+    <item android:id="@+id/nav_ders_ekleme"
+        android:title="Bilgilerini Güncelle"
+        android:icon="@mipmap/ic_person_black_24dp"/>
+
+    <item android:id="@+id/nav_ders_hakkinda"
+        android:title="Hakkında"
+        android:icon="@mipmap/ic_info_black_24dp"/>
 </menu>

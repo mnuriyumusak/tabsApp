@@ -1,31 +1,22 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
+
 import android.net.Uri;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.app.Activity;
+
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Environment;
+
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
+
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,17 +25,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+
 
 import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EventListener;
-import java.util.HashSet;
-import java.util.Locale;
+
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -105,10 +89,9 @@ public class CameraActivity extends AppCompatActivity {
                 {
                     case R.id.nav_main_activity:
                         intent = new Intent(CameraActivity.this, MainActivity.class);
+                        intent.putExtra("isFromAnother", true);
                         startActivity(intent);
                         item.setChecked(true);
-                        break;
-                    case R.id.nav_take_picture:
                         break;
                     case R.id.nav_ders_girme:
                         intent = new Intent(CameraActivity.this, DersGirme.class);
@@ -125,19 +108,26 @@ public class CameraActivity extends AppCompatActivity {
                         startActivity(intent);
                         item.setChecked(true);
                         break;
+                    case R.id.nav_gallery:
+                        intent = new Intent(CameraActivity.this, GalleryFolderActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(CameraActivity.this, CreditsActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
                 }
                 return false;
             }
         });
 
 
-        File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        //File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        File externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
         pnc = new PictureNameCreator(externalPath);
 
-        if(!hasPermissions())
-        {
-            requestPerms();
-        }
 
         btnTakePhoto = (Button) findViewById(R.id.cek_button);
         imgTakenPhoto = (ImageView) findViewById(R.id.imageview1);
@@ -186,28 +176,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private boolean hasPermissions(){
-        int res = 0;
-        //string array of permissions,
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
-
-        for (String perms : permissions){
-            res = checkCallingOrSelfPermission(perms);
-            if (!(res == PackageManager.PERMISSION_GRANTED)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void requestPerms(){
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(permissions,100);
-        }
-    }
 
     //camera açma isteğinin gittiği yer
     class btnTakePhotoClicker implements Button.OnClickListener

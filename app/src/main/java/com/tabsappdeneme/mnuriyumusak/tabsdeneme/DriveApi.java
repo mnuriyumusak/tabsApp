@@ -1,14 +1,14 @@
 package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+
 import android.os.Bundle;
+
 import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -16,11 +16,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
-import com.google.android.gms.common.api.GoogleApiClient;
+
 
 
 
@@ -74,7 +74,6 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
     private GoogleApiClient mGoogleApiClient;
 
     private Class createFolder = CreateFolderAPI.class;
-    private Class createInside = CreateFileInFolderActivity.class;
 
     private Button buluta_yukle;
     private TextView yuklenmemis_resim_sayisi;
@@ -128,6 +127,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                 {
                     case R.id.nav_main_activity:
                         intent = new Intent(DriveApi.this, MainActivity.class);
+                        intent.putExtra("isFromAnother", true);
                         startActivity(intent);
                         item.setChecked(true);
                         break;
@@ -146,7 +146,15 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                         startActivity(intent);
                         item.setChecked(true);
                         break;
-                    case R.id.nav_drive_api:
+                    case R.id.nav_gallery:
+                        intent = new Intent(DriveApi.this, GalleryFolderActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
+                        break;
+                    case R.id.nav_ders_hakkinda:
+                        intent = new Intent(DriveApi.this, CreditsActivity.class);
+                        startActivity(intent);
+                        item.setChecked(true);
                         break;
                 }
                 return false;
@@ -196,12 +204,21 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
                 }
                 else
                 {
-                    CreateFolderAPI a = new CreateFolderAPI(mydb,getExternalFilesDir(Environment.DIRECTORY_DCIM),mGoogleApiClient);
+
+                    File path;
+                    if(mydb.hasSDKart())
+                         path = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+                    else
+                         path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
+
+                    CreateFolderAPI a = new CreateFolderAPI(mydb,path,mGoogleApiClient);
                     Toast.makeText(getApplicationContext(),"Yükleniyor, Lütfen Uygulamadan Çıkmayınız, Arka Plana Alabilirsiniz",Toast.LENGTH_SHORT).show();
                     a.doTaskBabe();
 
+
                     Intent intent = new Intent(getBaseContext(), DriveYukleniyor.class);
                     startActivity(intent);
+
                 }
             }
             }

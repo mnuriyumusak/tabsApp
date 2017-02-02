@@ -6,23 +6,18 @@ package com.tabsappdeneme.mnuriyumusak.tabsdeneme;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.widget.Toast;
 
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "tabsApp.db";
     public static final String INFOS_TABLE_NAME = "infos";
-
     private HashMap hp;
-
     public DBHelper(Context context) {
         super(context, DATABASE_NAME , null, 1);
     }
@@ -33,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table infos " +
-                        "(id integer primary key, university_name text ,nick_name text,bulut integer,external_storage integer);"
+                        "(id integer primary key, university_name text ,nick_name text,sdkart integer,external_storage integer);"
         );
 
         db.execSQL(
@@ -62,6 +57,29 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public ArrayList<String> getDersFolders()
+    {
+        ArrayList<String> dersler = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res =  db.rawQuery( "select * from dersler", null );
+
+        int index = 0;
+        if(res.getCount() != 0)
+        {
+            res.moveToFirst();
+            do {
+                dersler.add(res.getString(res.getColumnIndex("ders_adi")));
+                index++;
+            } while (res.moveToNext());
+        }
+        else
+            dersler = null;
+        db.close();
+        return  dersler;
+    }
+
+
     public void addNewPhoto(String photoName, String courseName, boolean isTahtaFotosu)
     {
         ContentValues contentValues = new ContentValues();
@@ -84,6 +102,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public int getCekilenResimSayisi()
+    {
+        int result = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select * from drive_files", null );
+        result = res.getCount();
+        db.close();
+        return  result;
+    }
+
     public int getYuklenmemisResimSayisi()
     {
         int result = 0;
@@ -94,24 +122,38 @@ public class DBHelper extends SQLiteOpenHelper {
         return  result;
     }
 
-    public ArrayList<String[]> getResimler(boolean isTumResimler)
-    {
-        int boyut = getYuklenmemisResimSayisi();
-        String[] fotoAdi = new String[boyut];
-        String[] dersAdi = new String[boyut];
-        String[] is_ders_notu = new String [boyut];
 
+    public ArrayList<String[]> getResimler(String secilenDersAdi, boolean isDersNotu)
+    {
         ArrayList<String[]> all = new ArrayList<>();
+        int boyut;
+        if(secilenDersAdi.equals(""))
+            boyut = getYuklenmemisResimSayisi();
+        else
+            boyut = -1;
+
         SQLiteDatabase db = this.getWritableDatabase();
+
         Cursor res;
-        if(!isTumResimler)
+        if(secilenDersAdi.equals(""))
             res =  db.rawQuery( "select * from drive_files where is_uploaded=0", null );
         else
-            res =  db.rawQuery( "select * from drive_files", null );
+        {
+            if(isDersNotu)
+                res =  db.rawQuery( "select * from drive_files where course_name='"+secilenDersAdi+"' AND is_ders_notu=1", null );
+            else
+                res =  db.rawQuery( "select * from drive_files where course_name='"+secilenDersAdi+"' AND is_ders_notu=0", null );
+        }
+
+        if(boyut == -1)
+            boyut = res.getCount();
 
         int index = 0;
         if(res.getCount() != 0)
         {
+            String[] fotoAdi = new String[boyut];
+            String[] dersAdi = new String[boyut];
+            String[] is_ders_notu = new String [boyut];
             res.moveToFirst();
             do {
                 fotoAdi[index] = res.getString(res.getColumnIndex("file_name"));
@@ -218,7 +260,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("university_name", "Girilmemiş...");
         contentValues.put("nick_name", "Girilmemiş...");
-        contentValues.put("bulut", 0);
+        contentValues.put("sdkart", 0);
         boolean isStorageExist = checkStorage();
         if(isStorageExist)
             contentValues.put("external_storage", 1);
@@ -236,10 +278,24 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("dersler", null, contentValues2);
     }
 
-    public void addKayıtInfos(String uni, String nick, int bulut)
+    public boolean hasSDKart()
+    {
+        int sdkart;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select sdkart from infos", null );
+        res.moveToFirst();
+        sdkart = res.getInt(res.getColumnIndex("sdkart"));
+        db.close();
+        if(sdkart == 1)
+            return true;
+        else
+            return false;
+    }
+
+    public void addKayıtInfos(String uni, String nick, int isSdKArt)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("update infos set university_name='"+uni+"',nick_name='"+nick+"',bulut="+bulut+" where id=1");
+        db.execSQL("update infos set university_name='"+uni+"',nick_name='"+nick+"',sdkart="+isSdKArt+" where id=1");
         db.close();
     }
 
@@ -250,6 +306,14 @@ public class DBHelper extends SQLiteOpenHelper {
         int result = res.getInt(res.getColumnIndex("external_storage"));
         db.close();
         if(result == 1)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isIlkGiris()
+    {
+        if(getUniversityName().equals("Girilmemiş..."))
             return true;
         else
             return false;
