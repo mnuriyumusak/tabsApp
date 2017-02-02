@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AfterPicture">
+    tools:context="tabsapp.tabsapp.mnuriyumusak.tabsapp.AfterPicture">
 
     <ImageView
         app:srcCompat="@mipmap/content_films"

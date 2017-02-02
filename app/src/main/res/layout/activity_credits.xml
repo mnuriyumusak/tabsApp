@@ -22,7 +22,6 @@
             android:id="@+id/textView11"
             android:textSize="20sp"
             android:textColor="@color/cast_expanded_controller_background_color"
-            android:layout_below="@+id/include3"
             android:layout_centerHorizontal="true" />
 
         <TextView

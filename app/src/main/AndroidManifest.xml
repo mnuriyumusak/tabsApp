@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tabsappdeneme.mnuriyumusak.tabsdeneme"
+    package="tabsapp.tabsapp.mnuriyumusak.tabsapp"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+
 
     <application
         android:allowBackup="true"
@@ -21,13 +23,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".DriveYukleniyor"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DriveYukleniyor"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CameraActivity"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CameraActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,29 +38,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AfterPicture"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.AfterPicture"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DersGirme"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DersGirme"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".DersEkleme"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DersEkleme"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".DriveApi"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DriveApi"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CameraActivityDersNotu"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CameraActivityDersNotu"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GalleryActivity"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.GalleryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GalleryFolderActivity"
+            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.GalleryFolderActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".CreditsActivity"></activity>
+        <activity android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CreditsActivity"></activity>
     </application>
 
 </manifest>
