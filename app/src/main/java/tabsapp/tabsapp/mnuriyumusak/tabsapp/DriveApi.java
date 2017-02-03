@@ -63,6 +63,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
     private ActionBarDrawerToggle myToggle;
     private Toolbar myToolBar;
     private NavigationView navigationView;
+    private boolean connected = false;
 
     //yukardaki soldaki menu butonuna basınca menünün açılması için
     @Override
@@ -156,62 +157,88 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
             public void onClick(View v) {
             if(!isInternetWorking())
             {
-                Toast.makeText(getApplicationContext(),"Internet bağlı değil!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.internet_bagsiz),Toast.LENGTH_SHORT).show();
             }
             else
             {
-                if(!isWifiConnected())
+                if(!connected)
                 {
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
-                                case DialogInterface.BUTTON_POSITIVE:
-
-                                    Intent intent = new Intent(getBaseContext(), createFolder);
-                                    startService(intent);
-                                    break;
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    break;
-                            }
-                        }
-                    };
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DriveApi.this);
-                    builder.setMessage("WIFI kapalı,Data Paketi açık devam etmek istiyor musun?").setPositiveButton("Evet", dialogClickListener)
-                            .setNegativeButton("Hayır", dialogClickListener).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.hesaba_bag),Toast.LENGTH_SHORT).show();
+                    tryAgain();
                 }
                 else
                 {
+                    if(!isWifiConnected())
+                    {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        File path;
+                                        if(mydb.hasSDKart())
+                                            path = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+                                        else
+                                            path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
 
-                    File path;
-                    if(mydb.hasSDKart())
-                         path = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+                                        CreateFolderAPI a = new CreateFolderAPI(mydb,path,mGoogleApiClient,getApplicationContext());
+                                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.yukleniyor),Toast.LENGTH_SHORT).show();
+                                        a.doTaskBabe();
+
+                                        Intent intent = new Intent(getBaseContext(), DriveYukleniyor.class);
+                                        startActivity(intent);
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DriveApi.this);
+                        builder.setMessage(getResources().getString(R.string.wifi_kapali)).setPositiveButton(getResources().getString(R.string.evet), dialogClickListener)
+                                .setNegativeButton(getResources().getString(R.string.hayir), dialogClickListener).show();
+                    }
                     else
-                         path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
+                    {
+                        File path;
+                        if(mydb.hasSDKart())
+                            path = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+                        else
+                            path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
 
-                    CreateFolderAPI a = new CreateFolderAPI(mydb,path,mGoogleApiClient);
-                    Toast.makeText(getApplicationContext(),"Yükleniyor, Lütfen Uygulamadan Çıkmayınız, Arka Plana Alabilirsiniz",Toast.LENGTH_SHORT).show();
-                    a.doTaskBabe();
+                        CreateFolderAPI a = new CreateFolderAPI(mydb,path,mGoogleApiClient,getApplicationContext());
+                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.yukleniyor),Toast.LENGTH_SHORT).show();
+                        a.doTaskBabe();
 
+                        Intent intent = new Intent(getBaseContext(), DriveYukleniyor.class);
+                        startActivity(intent);
 
-                    Intent intent = new Intent(getBaseContext(), DriveYukleniyor.class);
-                    startActivity(intent);
-
+                    }
                 }
+
             }
             }
         });
     }
 
+    public void tryAgain()
+    {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+    }
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         // Called whenever the API client fails to connect.
+        connected = false;
         Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Drive.API)
@@ -238,7 +265,7 @@ public class DriveApi extends AppCompatActivity implements ConnectionCallbacks, 
 
     @Override
     public void onConnected(Bundle connectionHint) {
-
+        connected = true;
     }
 
     @Override

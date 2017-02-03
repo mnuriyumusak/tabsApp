@@ -1,8 +1,11 @@
 package tabsapp.tabsapp.mnuriyumusak.tabsapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +16,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +65,7 @@ public class DersEkleme extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ders_ekleme);
         mydb = new DBHelper(this);
+
 
         if(mydb.isIlkGiris())
         {
@@ -162,39 +168,71 @@ public class DersEkleme extends AppCompatActivity {
 
         kaydet_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case DialogInterface.BUTTON_POSITIVE:
-                                String uniName = university_text;
-                                String nickName = nick.getText().toString();
-                                int isSdKart = (sdKart.isChecked())?1:0;
-                                if(!mydb.getExternalStorageStatus())
-                                {
-                                    Toast.makeText(getApplicationContext(),"Telefonunuzda SD Kart Yok!",Toast.LENGTH_SHORT).show();
+                if(!hasPermissions())
+                {
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.izinsiz_devam_yok),Toast.LENGTH_SHORT).show();
+                    requestPerms();
+                }
+                else
+                {
+                    if(mydb.isIlkGiris())
+                    {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        if(!nick.getText().toString().equals(""))
+                                        {
+                                            String uniName = university_text;
+                                            String nickName = nick.getText().toString();
+                                            int isSdKart = (sdKart.isChecked())?1:0;
+                                            if(!mydb.getExternalStorageStatus() && isSdKart==1)
+                                            {
+                                                Toast.makeText(getApplicationContext(),getResources().getString(R.string.sd_kart_yok),Toast.LENGTH_SHORT).show();
+                                            }
+                                            else
+                                            {
+                                                mydb.addKayıtInfos(uniName,nickName,isSdKart);
+                                                general_university_name.setText(university_text);
+                                                general_nick_name.setText(nickName);
+                                                Intent intent = new Intent(DersEkleme.this, MainActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                        else
+                                            Toast.makeText(getApplicationContext(),getResources().getString(R.string.lutfen),Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
                                 }
-                                else
-                                {
-                                    mydb.addKayıtInfos(uniName,nickName,isSdKart);
-                                    general_university_name.setText(university_text);
-                                    general_nick_name.setText(nickName);
-                                    Intent intent = new Intent(DersEkleme.this, MainActivity.class);
-                                    startActivity(intent);
-                                }
-                                break;
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                break;
+                            }
+                        };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DersEkleme.this);
+                        builder.setMessage(getResources().getString(R.string.sd_kart_Secenegi)).setPositiveButton(getResources().getString(R.string.evet), dialogClickListener)
+                                .setNegativeButton(getResources().getString(R.string.hayir), dialogClickListener).show();
+                    }
+                    else
+                    {
+                        String uniName = university_text;
+                        String nickName = nick.getText().toString();
+                        int isSdKart = (sdKart.isChecked())?1:0;
+                        if(!mydb.getExternalStorageStatus())
+                        {
+                            Toast.makeText(getApplicationContext(),getResources().getString(R.string.sd_kart_yok),Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            mydb.addKayıtInfos(uniName,nickName,isSdKart);
+                            general_university_name.setText(university_text);
+                            general_nick_name.setText(nickName);
+                            Intent intent = new Intent(DersEkleme.this, MainActivity.class);
+                            startActivity(intent);
                         }
                     }
-                };
-                AlertDialog.Builder builder = new AlertDialog.Builder(DersEkleme.this);
-                builder.setMessage("SD kart seçeneğini bir daha ASLA değiştiremeyeceksin, emin misin?").setPositiveButton("Evet", dialogClickListener)
-                        .setNegativeButton("Hayır", dialogClickListener).show();
+                }
             }
         });
-
-
     }
 
     private boolean hasPermissions(){
@@ -224,6 +262,27 @@ public class DersEkleme extends AppCompatActivity {
 
     public void showWarning()
     {
-        Toast.makeText(getApplicationContext(),"Öncelikle bilgileriniz doldurmanız gerekiyor.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),getResources().getString(R.string.oncelikle_bilgi),Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+
+
+
 }

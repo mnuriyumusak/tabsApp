@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.vending.BILLING" />
 
-
     <application
         android:allowBackup="true"
         android:configChanges="orientation"
@@ -23,44 +22,49 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DriveYukleniyor"
+            android:name=".DriveYukleniyor"
             android:screenOrientation="portrait" />
         <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CameraActivity"
+            android:name=".CameraActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".AfterPicture"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DersGirme"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:focusableInTouchMode="true"/>
+        <activity
+            android:name=".DersEkleme"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:focusableInTouchMode="true"/>
+        <activity
+            android:name=".DriveApi"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CameraActivityDersNotu"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GalleryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GalleryFolderActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".CreditsActivity" />
+
+        <activity android:name=".DilSecimActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.AfterPicture"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DersGirme"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DersEkleme"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.DriveApi"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CameraActivityDersNotu"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.GalleryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.GalleryFolderActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name="tabsapp.tabsapp.mnuriyumusak.tabsapp.CreditsActivity"></activity>
     </application>
 
 </manifest>

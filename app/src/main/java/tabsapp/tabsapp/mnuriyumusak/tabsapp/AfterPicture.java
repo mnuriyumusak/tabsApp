@@ -45,8 +45,10 @@ public class AfterPicture extends AppCompatActivity {
         manuelDersAdi = extras.getString("manuelDersAdi");
 
 
-        File externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
-        pnc = new PictureNameCreator(externalPath);
+        File externalPath = null;
+        if(mydb.hasSDKart())
+            externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        pnc = new PictureNameCreator(externalPath,getApplicationContext());
 
         imgTakenPhoto = (ImageView) findViewById(R.id.after_take_imageview);
         yenidenCek = (Button) findViewById(R.id.yenidencek_button);
@@ -70,8 +72,12 @@ public class AfterPicture extends AppCompatActivity {
         kaydet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String photoName = pnc.getPictureName(mydb,false, true,isTahtaFotosu,manuelDersAdi);
-                Toast.makeText(getApplicationContext(),"Kaydedildi",Toast.LENGTH_SHORT).show();
-                mydb.addNewPhoto(photoName, pnc.getDersAdi(mydb),isTahtaFotosu);
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.kaydedildi),Toast.LENGTH_SHORT).show();
+                if(manuelDersAdi.equals(""))
+                    mydb.addNewPhoto(photoName, pnc.getDersAdi(mydb),isTahtaFotosu);
+                else
+                    mydb.addNewPhoto(photoName, manuelDersAdi,isTahtaFotosu);
+
                 Intent intent = new Intent(AfterPicture.this, CameraActivity.class);
                 startActivity(intent);
             }

@@ -23,7 +23,7 @@
         android:layout_width="match_parent" />
 
     <Button
-        android:text="KAYDET"
+        android:text="@string/kaydet"
         android:id="@+id/ok_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="57dp" />
 
     <Button
-        android:text="YENİDEN ÇEK"
+        android:text="@string/yeniden_cek"
         android:id="@+id/yenidencek_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

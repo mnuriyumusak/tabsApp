@@ -5,7 +5,6 @@
     android:layout_height="115dp">
 
     <TextView
-        android:text="İsim - nick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/isim_nick"
@@ -14,7 +13,6 @@
         android:layout_marginTop="30dp" />
 
     <TextView
-        android:text="Bilkent Üniversitesi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/university_name"

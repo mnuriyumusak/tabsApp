@@ -11,6 +11,8 @@ public class ImageModel implements Parcelable {
 
     String name, url;
 
+
+
     public ImageModel() {
 
     }

@@ -2,13 +2,16 @@ package tabsapp.tabsapp.mnuriyumusak.tabsapp;
 
 
 
+import android.content.Context;
 import android.net.Uri;
 
 import android.os.Environment;
+import android.widget.Toast;
 
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,12 +22,16 @@ import java.util.Date;
 
 public class PictureNameCreator{
     private File externalPath;
-    private String tahtaSubFolder = "Tahta Fotograflari";
-    private String dersNotuSubFolder = "Ders Notlari";
-
-    public PictureNameCreator(File externalPath)
+    private String tahtaSubFolder;
+    private String dersNotuSubFolder;
+    private Context con;
+    public PictureNameCreator(File externalPath, Context c)
     {
+
         this.externalPath = externalPath;
+        this.con = c;
+        tahtaSubFolder = con.getString(R.string.tahta_fotolari);
+        dersNotuSubFolder = con.getString(R.string.ders_notlari);
     }
 
     public String getDersAdi(DBHelper mydb)
@@ -41,15 +48,15 @@ public class PictureNameCreator{
 
         dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
         if(dayOfWeek == 2)
-            day = "Pazartesi";
+            day = con.getString(R.string.pztb);
         else if(dayOfWeek == 3)
-            day = "Salı";
+            day = con.getString(R.string.salib);
         else if(dayOfWeek == 4)
-            day = "Çarşamba";
+            day = con.getString(R.string.crsb);
         else if(dayOfWeek == 5)
-            day = "Perşembe";
+            day = con.getString(R.string.prsb);
         else if(dayOfWeek == 6)
-            day = "Cuma";
+            day = con.getString(R.string.cumab);
         else
             day = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -100,13 +107,13 @@ public class PictureNameCreator{
             else
                 dersAdi = manuelDersAdi;
 
-            if(!dersAdi.equals("Tanimlanamayanlar"))
+            if(!dersAdi.equals(con.getString(R.string.tanimlanamayanlar)))
             {
                 picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/"+dersAdi);
             }
             else
             {
-                picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/Tanimlanamayanlar");
+                picSavePath2 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/"+con.getString(R.string.tanimlanamayanlar));
             }
             if(isTahtaFotosu)
                 picSavePath3 = new File (picSavePath2.getPath() +"/"+tahtaSubFolder);
@@ -136,13 +143,13 @@ public class PictureNameCreator{
             else
                 dersAdi = manuelDersAdi;
 
-            if(!dersAdi.equals("Tanimlanamayanlar"))
+            if(!dersAdi.equals(con.getString(R.string.tanimlanamayanlar)))
             {
                 picSavePath2 = new File(externalPath + "/tabsApp/"+dersAdi);
             }
             else
             {
-                picSavePath2 = new File(externalPath + "/tabsApp/Tanimlanamayanlar");
+                picSavePath2 = new File(externalPath + "/tabsApp/"+con.getString(R.string.tanimlanamayanlar));
             }
             if(isTahtaFotosu)
                 picSavePath3 = new File (picSavePath2.getPath() +"/"+tahtaSubFolder);
@@ -173,6 +180,56 @@ public class PictureNameCreator{
 
         Uri pictureUri = Uri.fromFile(imageFile);
         return pictureUri;
+    }
+
+    public void dersiSil(String dersAdi,DBHelper mydb)
+    {
+        /*
+        ArrayList<String[]> all = mydb.derstekiTumResimler(derAdi);
+        File imageFile;
+        boolean isTahtaFotosu;
+        if(all != null)
+        {
+            for(int i = 0; i < all.get(0).length; i++)
+            {
+                if(all.get(2)[i].equals("0"))
+                    isTahtaFotosu = true;
+                else
+                    isTahtaFotosu = false;
+                imageFile = getPictureImageFile(mydb,true,false,isTahtaFotosu,derAdi);
+                imageFile.delete();
+            }
+        }
+        */
+        //creating folders
+        File picSavePath;
+        if(!mydb.hasSDKart()) {
+            picSavePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/tabsApp/" + dersAdi);
+        }
+        else //sdcard a yazar
+        {
+            picSavePath = new File(externalPath + "/tabsApp/"+dersAdi);
+        }
+        if(picSavePath.exists())
+        {
+            String[] children = picSavePath.list();
+            File innerFolder;
+            for (int i = 0; i < children.length; i++)
+            {
+                innerFolder = new File(picSavePath, children[i]);
+                if (innerFolder.isDirectory() && innerFolder.exists())
+                {
+                    String[] children2 = innerFolder.list();
+                    for (int p = 0; p < children2.length; p++)
+                    {
+                        new File(innerFolder, children2[p]).delete();
+                    }
+                }
+                innerFolder.delete();
+            }
+            picSavePath.delete();
+        }
+
     }
 
 }

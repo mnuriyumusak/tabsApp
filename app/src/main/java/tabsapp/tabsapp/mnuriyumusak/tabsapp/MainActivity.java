@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -26,6 +27,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
 import java.io.File;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -52,8 +54,9 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         if(bundle != null)
             isFromAnother = bundle.getBoolean("isFromAnother");
 
-        if(mydb.isIlkGiris())
+        if(mydb.isVeryFirstGiris())
         {
+            mydb.insertFirstRowAfterDil();
             Intent intent = new Intent(MainActivity.this, DersEkleme.class);
             startActivity(intent);
         }
@@ -128,10 +131,16 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
         cekilen_resim_sayisi = (TextView) findViewById(R.id.cekilen_resim_sayisi);
         cekilen_resim_sayisi.setText(""+mydb.getCekilenResimSayisi());
-        File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-        PictureNameCreator pnc = new PictureNameCreator(externalPath);
+        File externalPath = null;
+        if(mydb.hasSDKart())
+            externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        PictureNameCreator pnc = new PictureNameCreator(externalPath,getApplicationContext());
         suanki_ders = (TextView) findViewById(R.id.suanki_ders);
-        suanki_ders.setText(pnc.getDersAdi(mydb));
+        String currentDersAdi = pnc.getDersAdi(mydb);
+        if(currentDersAdi.equals(getResources().getString(R.string.tanimlanamayanlar)))
+            suanki_ders.setText(getResources().getString(R.string.yok));
+        else
+            suanki_ders.setText(currentDersAdi);
 
 
     }

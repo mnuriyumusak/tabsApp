@@ -1,9 +1,12 @@
 package tabsapp.tabsapp.mnuriyumusak.tabsapp;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -13,7 +16,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +67,7 @@ public class DersGirme  extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,15 +231,15 @@ public class DersGirme  extends AppCompatActivity {
         host.setup();
 
         //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("EKLE");
+        TabHost.TabSpec spec = host.newTabSpec(getResources().getString(R.string.ekle));
         spec.setContent(R.id.EKLE);
-        spec.setIndicator("EKLE");
+        spec.setIndicator(getResources().getString(R.string.ekle));
         host.addTab(spec);
 
         //Tab 2
-        spec = host.newTabSpec("GOR");
+        spec = host.newTabSpec(getResources().getString(R.string.gor));
         spec.setContent(R.id.GOR);
-        spec.setIndicator("GOR");
+        spec.setIndicator(getResources().getString(R.string.gor));
         host.addTab(spec);
 
 
@@ -251,6 +257,9 @@ public class DersGirme  extends AppCompatActivity {
             }
         });
 
+
+
+
         gunPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView parent, View view, int position, long id) {
@@ -265,13 +274,19 @@ public class DersGirme  extends AppCompatActivity {
         kaydet_ekle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String ders_adi = ders_harf.getText().toString().toUpperCase()+ders_rakam.getText().toString().toUpperCase();
-                mydb.dersEkle(ders_adi,gun,baslangic.getText().toString(),bitis.getText().toString());
-                Toast.makeText(getApplicationContext(),"Kaydedildi",Toast.LENGTH_SHORT).show();
-                gorSayfasiniYenile(gun);
-                baslangic.setText("");
-                bitis.setText("");
-                ders_harf.setText("");
-                ders_rakam.setText("");
+                if(!baslangic.getText().toString().equals("") && !bitis.getText().toString().equals("") && !ders_harf.getText().toString().equals("") && !ders_rakam.getText().toString().equals(""))
+                {
+                    mydb.dersEkle(ders_adi,gun,baslangic.getText().toString(),bitis.getText().toString());
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.kaydedildi),Toast.LENGTH_SHORT).show();
+                    gorSayfasiniYenile(gun);
+                    baslangic.setText("");
+                    bitis.setText("");
+                    ders_harf.setText("");
+                    ders_rakam.setText("");
+                }
+                else
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.lutfen),Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -348,40 +363,55 @@ public class DersGirme  extends AppCompatActivity {
 
     }
 
-    public void clearTextViews(String gun)
+    public void clearTextViews(String dersGun)
     {
-        if(gun.equalsIgnoreCase("pazartesi"))
+        if(dersGun.equalsIgnoreCase(getResources().getString(R.string.pztb)))
         {
             for(int i = 0 ; i < 36 ; i+=5)
+            {
                 allTextViews[i].setText("");
+                allTextViews[i].setVisibility(View.INVISIBLE);
+            }
 
         }
-        else if(gun.equalsIgnoreCase("salı"))
+        else if(dersGun.equalsIgnoreCase(getResources().getString(R.string.salib)))
         {
             for(int i = 1 ; i < 37 ; i+=5)
+            {
                 allTextViews[i].setText("");
+                allTextViews[i].setVisibility(View.INVISIBLE);
+            }
         }
-        else if(gun.equalsIgnoreCase("çarşamba"))
+        else if(dersGun.equalsIgnoreCase(getResources().getString(R.string.crsb)))
         {
             for(int i = 2 ; i < 38 ; i+=5)
+            {
                 allTextViews[i].setText("");
+                allTextViews[i].setVisibility(View.INVISIBLE);
+            }
         }
-        else if(gun.equalsIgnoreCase("perşembe"))
+        else if(dersGun.equalsIgnoreCase(getResources().getString(R.string.prsb)))
         {
             for(int i = 3 ; i < 39 ; i+=5)
+            {
                 allTextViews[i].setText("");
+                allTextViews[i].setVisibility(View.INVISIBLE);
+            }
         }
-        else if(gun.equalsIgnoreCase("cuma"))
+        else if(dersGun.equalsIgnoreCase(getResources().getString(R.string.cumab)))
         {
             for(int i = 4 ; i < 40 ; i+=5)
+            {
                 allTextViews[i].setText("");
+                allTextViews[i].setVisibility(View.INVISIBLE);
+            }
         }
     }
-    public void gorSayfasinaEkle(String dersAdi, String gun, String baslangic, String bitis)
+    public void gorSayfasinaEkle(String dersAdi, String dersGun, String baslangic, String bitis)
     {
         ders_girilmemis.setVisibility(View.INVISIBLE);
         String tmp = dersAdi+" "+baslangic+" "+bitis;
-        if(gun.equalsIgnoreCase("pazartesi"))
+        if(dersGun.equalsIgnoreCase(getResources().getString(R.string.pztb)))
         {
             for(int i = 0 ; i < 36 ; i+=5)
             {
@@ -394,7 +424,7 @@ public class DersGirme  extends AppCompatActivity {
                 }
             }
         }
-        else if (gun.equalsIgnoreCase("salı"))
+        else if (dersGun.equalsIgnoreCase(getResources().getString(R.string.salib)))
         {
             for(int i = 1 ; i < 37 ; i+=5)
             {
@@ -407,7 +437,7 @@ public class DersGirme  extends AppCompatActivity {
                 }
             }
         }
-        else if (gun.equalsIgnoreCase("çarşamba"))
+        else if (dersGun.equalsIgnoreCase(getResources().getString(R.string.crsb)))
         {
             for(int i = 2 ; i < 38 ; i+=5)
             {
@@ -420,7 +450,7 @@ public class DersGirme  extends AppCompatActivity {
                 }
             }
         }
-        else if (gun.equalsIgnoreCase("perşembe"))
+        else if (dersGun.equalsIgnoreCase(getResources().getString(R.string.prsb)))
         {
             for(int i = 3 ; i < 39 ; i+=5)
             {
@@ -433,9 +463,9 @@ public class DersGirme  extends AppCompatActivity {
                 }
             }
         }
-        else if (gun.equalsIgnoreCase("cuma"))
+        else if (dersGun.equalsIgnoreCase(getResources().getString(R.string.cumab)))
         {
-            for(int i = 3 ; i < 40 ; i+=5)
+            for(int i = 4 ; i < 40 ; i+=5)
             {
                 if(allTextViews[i].getText().toString().equals(""))
                 {
@@ -453,10 +483,10 @@ public class DersGirme  extends AppCompatActivity {
         String hour,min;
         hour = ""+hour_x;
         min = ""+minute_x;
-        if(hour_x == 0)
-            hour = "00";
-        if(minute_x == 0)
-            min = "00";
+        if(hour_x <= 9)
+            hour = "0"+hour_x;
+        if(minute_x <= 9)
+            min = "0"+minute_x;
 
         String time = ""+hour+":"+min;
         if (isBaslangis)
@@ -472,6 +502,22 @@ public class DersGirme  extends AppCompatActivity {
             return new TimePickerDialog(DersGirme.this, kTimePickerListener, hour_x, minute_x,true);
         }
         return null;
+    }
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
 

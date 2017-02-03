@@ -35,8 +35,8 @@ public class DriveYukleniyor extends AppCompatActivity {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_cloud_upload_black_24dp)
-                        .setContentTitle("Tabs - Dosyalar Drive'a Atıldı")
-                        .setContentText("Fotoğraflarınız başarılı bir şekilde buluta aktarıldı.");
+                        .setContentTitle(getResources().getString(R.string.drive_atildi))
+                        .setContentText(getResources().getString(R.string.buluta_aktarildi));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
@@ -56,6 +56,8 @@ public class DriveYukleniyor extends AppCompatActivity {
         {
             addNotification();
             notificationSended = true;
+            Intent intent = new Intent(DriveYukleniyor.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 

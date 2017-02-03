@@ -23,7 +23,7 @@
 
 
             <TextView
-                android:text="↓ Ders Seç ↓"
+                android:text="@string/ders_Sec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView7"
@@ -55,7 +55,7 @@
               />
 
             <TextView
-                android:text="Foto Çek"
+                android:text="@string/foto_cek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView12"

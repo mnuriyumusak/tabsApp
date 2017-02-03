@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:text="İstatistikler"
+            android:text="@string/istatistikler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="62dp"
@@ -25,7 +25,7 @@
             android:layout_centerHorizontal="true" />
 
         <TextView
-            android:text="Çekilen Resim Sayısı:"
+            android:text="@string/cekilen_resim_sayi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -44,7 +44,6 @@
             android:layout_toEndOf="@+id/textView11" />
 
         <TextView
-            android:text="Tanimlanamayanlar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/suanki_ders"
@@ -55,14 +54,34 @@
             android:layout_toEndOf="@+id/textView21" />
 
         <TextView
-            android:text="Şu Anda Bulunduğun Ders:"
+            android:text="@string/suanki_ders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView21"
             android:layout_alignBaseline="@+id/suanki_ders"
             android:layout_alignBottom="@+id/suanki_ders"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="32dp" />
+            android:layout_alignStart="@+id/textView18" />
+
+        <TextView
+            android:text="@string/bilgi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/bigi"
+            android:textSize="20sp"
+            android:textColor="@color/cast_expanded_controller_background_color" />
+
+        <TextView
+            android:text="@string/bilgi_yazisi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bigi"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:id="@+id/bilgi_yazisi"
+            android:textSize="14sp"
+            android:textAlignment="center" />
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

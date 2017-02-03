@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"/>
 
         <Button
-            android:text="Buluta Yükle"
+            android:text="@string/buluta_yukle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/buluta_yukle"
@@ -26,7 +26,7 @@
             android:layout_centerHorizontal="true" />
 
         <TextView
-            android:text="Yüklenmemiş Resim sayısı:"
+            android:text="@string/yuklenmemis_sayi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView15"

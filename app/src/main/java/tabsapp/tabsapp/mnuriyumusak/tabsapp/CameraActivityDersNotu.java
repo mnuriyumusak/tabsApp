@@ -129,8 +129,10 @@ public class CameraActivityDersNotu extends AppCompatActivity {
         });
 
 
-        File externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
-        pnc = new PictureNameCreator(externalPath);
+        File externalPath = null;
+        if(mydb.hasSDKart())
+            externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        pnc = new PictureNameCreator(externalPath,getApplicationContext());
 
         ders_notu_cek = (Button) findViewById(R.id.not_cek_foto_Cek);
         ders_notu_cek.setOnClickListener(new CameraActivityDersNotu.btnTakePhotoClicker());
@@ -143,7 +145,7 @@ public class CameraActivityDersNotu extends AppCompatActivity {
         }
         else
         {
-            String[] tmp = {"Henüz ders girilmemiş..."};
+            String[] tmp = {getResources().getString(R.string.ders_girilmemis)};
             customAdapter =new CustomSpinnerAdapter(getApplicationContext(),tmp);
         }
         ders_secimi.setAdapter(customAdapter);
@@ -165,7 +167,7 @@ public class CameraActivityDersNotu extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAM_REQUEST)
+        if(requestCode == CAM_REQUEST && resultCode == RESULT_OK)
         {
             Intent intent = new Intent(this, AfterPicture.class);
             intent.putExtra("isTahtaFotosu", false);
@@ -182,12 +184,12 @@ public class CameraActivityDersNotu extends AppCompatActivity {
             // TODO Auto-generated method stub
             if(selectedDers == null)
             {
-                Toast.makeText(getApplicationContext(),"Seçim yapmanız gerekli!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.secim_gerekli),Toast.LENGTH_SHORT).show();
             }
             else
             {
                 if(selectedDers.equals(""))
-                    Toast.makeText(getApplicationContext(),"Seçim yapmanız gerekli!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.secim_gerekli),Toast.LENGTH_SHORT).show();
                 else
                 {
                     Intent cameraintent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);

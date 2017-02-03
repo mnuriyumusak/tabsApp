@@ -36,145 +36,10 @@
                 android:layout_height="match_parent">
 
                 <RelativeLayout
-                    android:id="@+id/EKLE"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:text="-"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:id="@+id/textView8"
-                        android:textColor="@android:color/background_dark"
-                        android:textSize="18sp"
-                        android:layout_alignBaseline="@+id/ders_harf"
-                        android:layout_alignBottom="@+id/ders_harf"
-                        android:layout_toStartOf="@+id/ders_rakam" />
-
-                    <EditText
-                        android:layout_height="wrap_content"
-                        android:inputType="text|textPersonName|number"
-                        android:ems="10"
-                        android:id="@+id/ders_rakam"
-                        android:hint='"102"'
-                        android:layout_width="60dp"
-                        android:layout_alignBaseline="@+id/ders_harf"
-                        android:layout_alignBottom="@+id/ders_harf"
-                        android:layout_toEndOf="@+id/ders_harf" />
-
-                    <TextView
-                        android:text="Gün:"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="44dp"
-                        android:id="@+id/textView9"
-                        android:textSize="18sp"
-                        android:textStyle="normal|bold"
-                        android:textColor="@android:color/background_dark"
-                        android:layout_below="@+id/ders_harf"
-                        android:layout_alignStart="@+id/textView6" />
-
-                    <Spinner
-                        android:layout_height="wrap_content"
-                        android:id="@+id/gun"
-                        android:layout_alignTop="@+id/textView9"
-                        android:layout_alignParentEnd="true"
-                        android:layout_width="200dp"
-                        android:entries="@array/günler"/>
-
-                    <TextView
-                        android:text="Bitiş:"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="54dp"
-                        android:id="@+id/textView13"
-                        android:textSize="18sp"
-                        android:textStyle="normal|bold"
-                        android:textColor="@android:color/background_dark"
-                        android:layout_below="@+id/textView10"
-                        android:layout_alignStart="@+id/textView10" />
-
-                    <TextView
-                        android:text="Ders Kodu:"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="63dp"
-                        android:id="@+id/textView6"
-                        android:textSize="18sp"
-                        android:textStyle="normal|bold"
-                        android:textColor="@android:color/background_dark"
-                        android:layout_alignParentTop="true"
-                        android:layout_toStartOf="@+id/gun"
-                        android:layout_marginEnd="28dp" />
-
-                    <EditText
-                        android:layout_height="wrap_content"
-                        android:inputType="text|textPersonName"
-                        android:ems="10"
-                        android:id="@+id/ders_harf"
-                        android:hint='"ENG"'
-                        android:layout_width="75dp"
-                        android:layout_alignBaseline="@+id/textView6"
-                        android:layout_alignBottom="@+id/textView6"
-                        android:layout_alignStart="@+id/gun" />
-
-                    <TextView
-                        android:text="Başlangıç:"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="49dp"
-                        android:id="@+id/textView10"
-                        android:textSize="18sp"
-                        android:textStyle="normal|bold"
-                        android:textColor="@android:color/background_dark"
-                        android:layout_below="@+id/gun"
-                        android:layout_alignStart="@+id/textView9" />
-
-                    <EditText
-                        android:inputType="time"
-                        android:ems="10"
-                        android:id="@+id/bitis_field"
-                        android:layout_width="150dp"
-                        android:hint="giriniz..."
-                        android:layout_height="40dp"
-                        android:layout_alignBottom="@+id/textView13"
-                        android:layout_alignStart="@+id/baslangic_field"
-                        android:focusableInTouchMode="false"/>
-
-                    <EditText
-                        android:inputType="time"
-                        android:ems="10"
-                        android:id="@+id/baslangic_field"
-                        android:layout_width="150dp"
-                        android:hint="giriniz..."
-                        android:layout_height="40dp"
-                        android:layout_alignBaseline="@+id/textView10"
-                        android:layout_alignBottom="@+id/textView10"
-                        android:layout_alignStart="@+id/gun"
-                        android:focusableInTouchMode="false"/>
-
-                    <Button
-                        android:text="KAYDET"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/kaydet_ekle"
-                        android:layout_width="300dp"
-                        android:padding="10dp"
-                        android:textColor="#ffffff"
-                        android:background="@drawable/my_button"
-                        android:layout_below="@+id/textView13"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="44dp" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
                     android:id="@+id/GOR"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_marginStart="11dp"
                         android:id="@+id/v24"
@@ -609,7 +474,7 @@
                         android:visibility="invisible" />
 
                     <TextView
-                        android:text="Henüz Ders Girilmemiş"
+                        android:text="@string/ders_girilmemis"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/ders_girilmemis"
@@ -652,7 +517,7 @@
                         android:textSize="13.5sp" />
 
                     <TextView
-                        android:text="    Salı"
+                        android:text="@string/sali"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView56"
                         android:layout_width="wrap_content"
@@ -662,7 +527,7 @@
                         android:textStyle="normal|bold" />
 
                     <TextView
-                        android:text="Çarşamba"
+                        android:text="@string/crs"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView57"
                         android:textSize="14sp"
@@ -673,7 +538,7 @@
                         android:textStyle="normal|bold" />
 
                     <TextView
-                        android:text="  Cuma"
+                        android:text="@string/cuma"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView51"
                         android:textSize="14sp"
@@ -684,7 +549,7 @@
                         android:textStyle="normal|bold" />
 
                     <TextView
-                        android:text="Perşembe"
+                        android:text="@string/prs"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView58"
                         android:textSize="14sp"
@@ -696,7 +561,7 @@
                         android:textStyle="normal|bold" />
 
                     <TextView
-                        android:text="Pazartesi"
+                        android:text="@string/pzt"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView55"
                         android:layout_width="wrap_content"
@@ -715,6 +580,140 @@
                         android:layout_alignBaseline="@+id/bos1"
                         android:layout_alignBottom="@+id/bos1"
                         android:layout_alignEnd="@+id/textView55" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/EKLE"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="-"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:id="@+id/textView8"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="18sp"
+                        android:layout_alignBaseline="@+id/ders_harf"
+                        android:layout_alignBottom="@+id/ders_harf"
+                        android:layout_toStartOf="@+id/ders_rakam" />
+
+                    <EditText
+                        android:layout_height="wrap_content"
+                        android:inputType="text|textPersonName|number"
+                        android:ems="10"
+                        android:id="@+id/ders_rakam"
+                        android:hint='"102"'
+                        android:layout_width="60dp"
+                        android:layout_alignBaseline="@+id/ders_harf"
+                        android:layout_alignBottom="@+id/ders_harf"
+                        android:layout_toEndOf="@+id/ders_harf" />
+
+                    <TextView
+                        android:text="@string/gun"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="44dp"
+                        android:id="@+id/textView9"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/background_dark"
+                        android:layout_below="@+id/ders_harf"
+                        android:layout_alignStart="@+id/textView6" />
+
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:id="@+id/gun"
+                        android:layout_alignTop="@+id/textView9"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="200dp"
+                        android:entries="@array/günler"/>
+
+                    <TextView
+                        android:text="@string/bitis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="54dp"
+                        android:id="@+id/textView13"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/background_dark"
+                        android:layout_below="@+id/textView10"
+                        android:layout_alignStart="@+id/textView10" />
+
+                    <TextView
+                        android:text="@string/ders_kodu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="63dp"
+                        android:id="@+id/textView6"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/background_dark"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/gun"
+                        android:layout_marginEnd="28dp" />
+
+                    <EditText
+                        android:layout_height="wrap_content"
+                        android:inputType="text|textPersonName"
+                        android:ems="10"
+                        android:id="@+id/ders_harf"
+                        android:hint='"ENG"'
+                        android:layout_width="75dp"
+                        android:layout_alignBaseline="@+id/textView6"
+                        android:layout_alignBottom="@+id/textView6"
+                        android:layout_alignStart="@+id/gun" />
+
+                    <TextView
+                        android:text="@string/baslangic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="49dp"
+                        android:id="@+id/textView10"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/background_dark"
+                        android:layout_below="@+id/gun"
+                        android:layout_alignStart="@+id/textView9" />
+
+                    <EditText
+                        android:inputType="time"
+                        android:ems="10"
+                        android:id="@+id/bitis_field"
+                        android:layout_width="150dp"
+                        android:hint="@string/giriniz"
+                        android:layout_height="40dp"
+                        android:layout_alignBottom="@+id/textView13"
+                        android:layout_alignStart="@+id/baslangic_field"
+                        android:focusableInTouchMode="false"/>
+
+                    <EditText
+                        android:inputType="time"
+                        android:ems="10"
+                        android:id="@+id/baslangic_field"
+                        android:layout_width="150dp"
+                        android:hint="@string/giriniz"
+                        android:layout_height="40dp"
+                        android:layout_alignBaseline="@+id/textView10"
+                        android:layout_alignBottom="@+id/textView10"
+                        android:layout_alignStart="@+id/gun"
+                        android:focusableInTouchMode="false" />
+
+                    <Button
+                        android:text="@string/kaydet"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/kaydet_ekle"
+                        android:layout_width="300dp"
+                        android:padding="10dp"
+                        android:textColor="#ffffff"
+                        android:background="@drawable/my_button"
+                        android:layout_below="@+id/textView13"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="44dp" />
 
                 </RelativeLayout>
 

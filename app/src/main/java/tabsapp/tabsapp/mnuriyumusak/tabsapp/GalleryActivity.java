@@ -1,24 +1,32 @@
 package tabsapp.tabsapp.mnuriyumusak.tabsapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,8 +42,8 @@ public class GalleryActivity extends AppCompatActivity  {
     RecyclerView mRecyclerView;
 
     private File imageFile;
-    private String tahtaSubFolder = "Tahta Fotograflari";
-    private String dersNotuSubFolder = "Ders Notlari";
+    private String tahtaSubFolder;
+    private String dersNotuSubFolder;
 
     private String secilenDersAdi;
     private boolean isDersNotu;
@@ -60,6 +68,10 @@ public class GalleryActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_layout);
+
+        tahtaSubFolder = getResources().getString(R.string.tahta_fotolari);
+        dersNotuSubFolder = getResources().getString(R.string.ders_notlari);
+
         Bundle bundle = getIntent().getExtras();
 
         secilenDersAdi = bundle.getString("secilenDersAdi");
@@ -127,7 +139,12 @@ public class GalleryActivity extends AppCompatActivity  {
         ArrayList<ImageModel> data = new ArrayList<>();
         String[] IMGS = null;
 
-        File ext = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        File externalPath = null;
+        if(mydb.hasSDKart())
+            externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+        else
+            externalPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
+
         String subFolder;
         //gallery işleri burdan sonra başlıyor
         if(tumResimler != null)
@@ -140,7 +157,7 @@ public class GalleryActivity extends AppCompatActivity  {
                 else
                     subFolder = dersNotuSubFolder;
 
-                imageFile = new File(ext+"/tabsApp/"+tumResimler.get(1)[i]+"/"+subFolder, tumResimler.get(0)[i]);
+                imageFile = new File(externalPath+"/tabsApp/"+tumResimler.get(1)[i]+"/"+subFolder, tumResimler.get(0)[i]);
                 IMGS[i] = imageFile.getPath().toString();
             }
         }
@@ -165,49 +182,104 @@ public class GalleryActivity extends AppCompatActivity  {
         mAdapter = new GalleryAdapter(GalleryActivity.this, data);
         mRecyclerView.setAdapter(mAdapter);
 
+
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,
-                new RecyclerItemClickListener.OnItemClickListener() {
+                mRecyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                Intent intentquick = new Intent(Intent.ACTION_VIEW);
+                Uri imgUri = Uri.fromFile(new File(allIMGS[position]));
+                intentquick.setDataAndType(imgUri,"image/*");
+                intentquick.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intentquick);
+            }
+
+            @Override
+            public void onLongClick(final View view, final int position) {
+                final CharSequence[] items = {getResources().getString(R.string.delete)};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
+                builder.setTitle(getResources().getString(R.string.seciniz));
+                builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intentquick = new Intent(Intent.ACTION_VIEW);
-                        Uri imgUri = Uri.fromFile(new File(allIMGS[position]));
-                        intentquick.setDataAndType(imgUri,"image/*");
-                        intentquick.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intentquick);
+                    public void onClick(DialogInterface dialog, int item) {
+                        if(item == 0)
+                        {
+                            File deletedOne = new File(allIMGS[position]);
+                            deletedOne.delete();Glide.clear(view);
+                            Glide.get(getApplicationContext()).clearMemory();
+                            Handler handler = new Handler();
+                            Runnable r = new Runnable() {
+                                public void run() {
+                                    Glide.get(getApplicationContext()).clearDiskCache();
+                                }
+                            };
+                            mydb.deletePhoto(allIMGS[position]);
+                            Toast.makeText(getApplicationContext(),getResources().getString(R.string.silindi),Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(GalleryActivity.this, GalleryActivity.class);
+                            intent.putExtra("secilenDersAdi", secilenDersAdi);
+                            intent.putExtra("isDersNotu", isDersNotu);
+                            startActivity(intent);
+                        }
                     }
-                }));
+                });
+                builder.show();
+            }
+
+        }));
+
+
+
     }
+
+    public static interface ClickListener{
+        public void onClick(View view,int position);
+        public void onLongClick(View view,int position);
+    }
+
 }
 
 
-class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
-    private OnItemClickListener mListener;
 
-    public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
-    }
 
-    GestureDetector mGestureDetector;
+class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener{
 
-    public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
-        mListener = listener;
-        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            @Override public boolean onSingleTapUp(MotionEvent e) {
+    private GalleryActivity.ClickListener clicklistener;
+    private GestureDetector gestureDetector;
+
+    public RecyclerItemClickListener(Context context, final RecyclerView recycleView, final GalleryActivity.ClickListener clicklistener){
+
+        this.clicklistener=clicklistener;
+        gestureDetector=new GestureDetector(context,new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
                 return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                View child=recycleView.findChildViewUnder(e.getX(),e.getY());
+                if(child!=null && clicklistener!=null){
+                    clicklistener.onLongClick(child,recycleView.getChildAdapterPosition(child));
+                }
             }
         });
     }
 
-    @Override public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
-        View childView = view.findChildViewUnder(e.getX(), e.getY());
-        if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
-            mListener.onItemClick(childView, view.getChildPosition(childView));
-            return true;
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        View child=rv.findChildViewUnder(e.getX(),e.getY());
+        if(child!=null && clicklistener!=null && gestureDetector.onTouchEvent(e)){
+            clicklistener.onClick(child,rv.getChildAdapterPosition(child));
         }
+
         return false;
     }
 
-    @Override public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) { }
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {

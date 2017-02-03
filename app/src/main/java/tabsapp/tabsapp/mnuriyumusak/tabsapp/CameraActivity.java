@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -125,8 +126,12 @@ public class CameraActivity extends AppCompatActivity {
 
 
         //File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-        File externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
-        pnc = new PictureNameCreator(externalPath);
+        File externalPath = null;
+        if(mydb.hasSDKart())
+            externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+
+
+        pnc = new PictureNameCreator(externalPath,getApplicationContext());
 
 
         btnTakePhoto = (Button) findViewById(R.id.cek_button);
@@ -167,7 +172,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAM_REQUEST)
+        if(requestCode == CAM_REQUEST && resultCode == RESULT_OK)
         {
             Intent intent = new Intent(this, AfterPicture.class);
             intent.putExtra("isTahtaFotosu", true);
@@ -175,7 +180,6 @@ public class CameraActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
 
     //camera açma isteğinin gittiği yer
     class btnTakePhotoClicker implements Button.OnClickListener

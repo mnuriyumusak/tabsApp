@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="İşlem Boyunca Lütfen Uygulamadan Çıkmayınız "
+        android:text="@string/bulut_info1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="51dp"
@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Arka Plana Alabilirsiniz"
+        android:text="@string/bulut_info2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -35,7 +35,7 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Buluta Yükleniyor"
+        android:text="@string/buluta_yuk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView14"
@@ -54,7 +54,7 @@
         android:layout_toEndOf="@+id/textView14" />
 
     <TextView
-        android:text="Kalan Resim Sayısı:"
+        android:text="@string/kalan_sayi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"

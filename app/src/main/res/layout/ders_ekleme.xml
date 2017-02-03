@@ -30,7 +30,7 @@
                 android:layout_alignStart="@+id/university_field" />
 
             <TextView
-                android:text="Üniversite"
+                android:text="@string/uni_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView2"
@@ -41,7 +41,7 @@
                 android:layout_marginTop="93dp" />
 
             <TextView
-                android:text="Nick"
+                android:text="@string/nick_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView"
@@ -61,7 +61,7 @@
                 android:layout_toEndOf="@+id/sdkart_yazisi" />
 
             <TextView
-                android:text="SD Karta Kaydet"
+                android:text="@string/sd_kart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/sdkart_yazisi"
@@ -78,7 +78,7 @@
                 android:layout_alignParentEnd="true" />
 
             <Button
-                android:text="KAYDEt"
+                android:text="@string/kaydet"
                 android:layout_height="wrap_content"
                 android:id="@+id/kaydet_button"
                 android:layout_width="300dp"

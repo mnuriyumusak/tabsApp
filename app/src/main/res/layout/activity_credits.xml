@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:text="Hakkında"
+            android:text="@string/hakkinda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="62dp"
@@ -52,7 +52,7 @@
             android:textColor="@color/colorAccent" />
 
         <TextView
-            android:text="Bu uygulamayı geliştirme sürecinde desteğini benden esirgemeyen sevgili oda arkadaşım Utku Haspulat'a teşekkürler."
+            android:text="@string/tesekkur"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView19"
             android:layout_marginTop="79dp"

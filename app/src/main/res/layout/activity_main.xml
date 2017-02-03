@@ -41,7 +41,7 @@
                 android:layout_marginTop="90dp" />
 
             <TextView
-                android:text="Tahtayı Çek"
+                android:text="@string/tahtayi_cek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView4"
@@ -51,7 +51,7 @@
                 android:layout_marginTop="139dp" />
 
             <TextView
-                android:text="Ders Notu Çek"
+                android:text="@string/ders_notu_cek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView5"

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_main_activity"
-        android:title="Ana Sayfa"
+        android:title="@string/ana_sayfa"
         android:icon="@mipmap/ic_home_black_24dp"/>
 
     <item android:id="@+id/nav_take_picture"
-        android:title="Resim Çek"
+        android:title="@string/resim_cek_menu"
         android:icon="@mipmap/ic_add_a_photo_black_24dp"/>
 
     <item android:id="@+id/nav_ders_girme"
-        android:title="Ders Ekle/Gör"
+        android:title="@string/ders_ekle_gor"
         android:icon="@mipmap/ic_note_add_black_24dp" />
 
     <item android:id="@+id/nav_gallery"
-        android:title="Galeri"
+        android:title="@string/galeri"
         android:icon="@mipmap/ic_photo_library_black_24dp"/>
 
     <item android:id="@+id/nav_drive_api"
-        android:title="Buluta Yükle"
+        android:title="@string/buluta_yukle_menu"
         android:icon="@mipmap/ic_cloud_upload_black_24dp"/>
 
     <item android:id="@+id/nav_ders_ekleme"
-        android:title="Bilgilerini Güncelle"
+        android:title="@string/bilgi_guncelle"
         android:icon="@mipmap/ic_person_black_24dp"/>
 
     <item android:id="@+id/nav_ders_hakkinda"
-        android:title="Hakkında"
+        android:title="@string/hakkinda"
         android:icon="@mipmap/ic_info_black_24dp"/>
 </menu>

@@ -4,10 +4,14 @@ package tabsapp.tabsapp.mnuriyumusak.tabsapp;
  * Created by Nuri on 17.01.2017.
  */
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,9 +21,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "tabsApp.db";
     public static final String INFOS_TABLE_NAME = "infos";
-    private HashMap hp;
+    private Context con;
     public DBHelper(Context context) {
         super(context, DATABASE_NAME , null, 1);
+        con = context;
+        setDil(con);
     }
 
 
@@ -28,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table infos " +
-                        "(id integer primary key, university_name text ,nick_name text,sdkart integer,external_storage integer);"
+                        "(id integer primary key, university_name text ,nick_name text,sdkart integer,external_storage integer, dil integer);"
         );
 
         db.execSQL(
@@ -45,7 +51,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table drive_files " +
                         "(id integer primary key, file_name text,course_name text,is_uploaded integer,is_ders_notu integer);"
         );
-
         insertFirstRow(db);
     }
 
@@ -95,6 +100,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deletePhoto(String photoName)
+    {
+        String[] all = photoName.split("/");
+        String fileName = all[all.length-1];
+        String courseName = all[all.length-3];
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from drive_files where file_name='"+fileName+"' and course_name='"+courseName+"'");
+        db.close();
+    }
+
     public void photoDriveaYuklendi(String photoName)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -127,6 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         ArrayList<String[]> all = new ArrayList<>();
         int boyut;
+
         if(secilenDersAdi.equals(""))
             boyut = getYuklenmemisResimSayisi();
         else
@@ -233,6 +249,48 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void dersSil(String ad)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from dersler where ders_adi='"+ad+"'");
+        db.execSQL("delete from drive_files where course_name='"+ad+"'");
+        db.close();
+    }
+
+    public ArrayList<String[]> derstekiTumResimler(String dersinAdi)
+    {
+        ArrayList<String[]> all = new ArrayList<>();
+        int boyut;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select * from drive_files where course_name='"+dersinAdi+"'",null );
+
+        boyut = res.getCount();
+
+        int index = 0;
+        if(res.getCount() != 0)
+        {
+            String[] fotoAdi = new String[boyut];
+            String[] dersAdi = new String[boyut];
+            String[] is_ders_notu = new String [boyut];
+            res.moveToFirst();
+            do {
+                fotoAdi[index] = res.getString(res.getColumnIndex("file_name"));
+                dersAdi[index] = res.getString(res.getColumnIndex("course_name"));
+                is_ders_notu[index] = ""+res.getInt(res.getColumnIndex("is_ders_notu"));
+                index++;
+            } while (res.moveToNext());
+            all.add(fotoAdi);
+            all.add(dersAdi);
+            all.add(is_ders_notu);
+        }
+        else
+            all = null;
+        db.close();
+        return  all;
+    }
+
+
     public void folderEkle(String folder_name, String folder_id)
     {
         ContentValues contentValues = new ContentValues();
@@ -258,9 +316,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertFirstRow (SQLiteDatabase db) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("university_name", "Girilmemiş...");
-        contentValues.put("nick_name", "Girilmemiş...");
+        contentValues.put("university_name", "");
+        contentValues.put("nick_name", "");
         contentValues.put("sdkart", 0);
+        contentValues.put("dil", 0);
         boolean isStorageExist = checkStorage();
         if(isStorageExist)
             contentValues.put("external_storage", 1);
@@ -269,7 +328,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("infos", null, contentValues);
 
         ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("ders_adi", "Tanimlanamayanlar");
+        contentValues2.put("ders_adi", "");
         contentValues2.put("ders_gunu", "");
         contentValues2.put("ders_baslangic", "");
         contentValues2.put("ders_bitis", "");
@@ -277,6 +336,52 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues2.put("not_photo_no", 0);
         db.insert("dersler", null, contentValues2);
     }
+
+    public void insertFirstRowAfterDil() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update infos set university_name='"+con.getResources().getString(R.string.girilmemis)+
+                "', nick_name='"+con.getResources().getString(R.string.girilmemis)+"' where id=1");
+        db.execSQL("update dersler set ders_adi='"+con.getResources().getString(R.string.tanimlanamayanlar)+"' where id=1");
+        db.close();
+    }
+
+    public void dilEkle(String dilAdi)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(dilAdi.equals("tr"))
+        {
+            db.execSQL("update infos set dil=0 where id=1");
+        }
+        else
+        {
+            db.execSQL("update infos set dil=1 where id=1");
+        }
+        db.close();
+    }
+
+    public void setDil(Context cc)
+    {
+        int result;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select dil from infos", null );
+        res.moveToFirst();
+        result = res.getInt(res.getColumnIndex("dil"));
+        db.close();
+        String languageToLoad;
+        if(result == 1)
+            languageToLoad = "en"; // your language
+        else
+            languageToLoad = ""; // your language
+
+        Locale locale = new Locale(languageToLoad);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        cc.getResources().updateConfiguration(config,
+                cc.getResources().getDisplayMetrics());
+    }
+
 
     public boolean hasSDKart()
     {
@@ -313,14 +418,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean isIlkGiris()
     {
-        if(getUniversityName().equals("Girilmemiş..."))
+        if(getUniversityName().equals(con.getString(R.string.girilmemis)))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean isVeryFirstGiris()
+    {
+        if(getUniversityName().equals(""))
             return true;
         else
             return false;
     }
 
     public String getUniversityName() {
-        String name = "Girilmemiş...";
+        String name = con.getString(R.string.girilmemis);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select university_name from infos", null );
         if(res.getCount() != 0)
@@ -333,7 +446,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public String getNickName() {
-        String name = "Girilmemiş...";
+        String name = con.getString(R.string.girilmemis);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select nick_name from infos", null );
         if(res.getCount() != 0)
@@ -393,7 +506,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res =  db.rawQuery( "select * from dersler where ders_gunu='"+curDay+"' and ders_baslangic<='"+bas+"' and ders_bitis>='"+son+"'", null);
 
-        String dersAdi = "Tanimlanamayanlar";
+        String dersAdi = con.getString(R.string.tanimlanamayanlar);
         if(res.getCount() != 0)
         {
             if (res.moveToFirst())
@@ -405,7 +518,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return dersAdi;
     }
 
-    private boolean checkStorage() {
+    public boolean checkStorage() {
+        /*
         boolean externalStorageReadable, externalStorageWritable;
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED)) {
@@ -417,6 +531,12 @@ public class DBHelper extends SQLiteOpenHelper {
             externalStorageReadable = externalStorageWritable = false;
         }
         return externalStorageWritable;
+        */
+        File[] fs = con.getExternalFilesDirs(null);
+        if (fs.length == 2)
+            return true;
+        else
+            return false;
     }
 
 

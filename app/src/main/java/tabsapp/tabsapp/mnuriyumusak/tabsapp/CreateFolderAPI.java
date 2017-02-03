@@ -4,6 +4,7 @@ package tabsapp.tabsapp.mnuriyumusak.tabsapp;
  * Created by Nuri on 28.01.2017.
  */
 
+import android.content.Context;
 import android.content.Intent;
 
 import android.graphics.Bitmap;
@@ -36,8 +37,8 @@ public class CreateFolderAPI extends BaseDemoActivity{
     DBHelper mydb;
     boolean dersExist = false;
     private String rootFolderName = "TabsAPP";
-    private String tahtaSubFolder = "Tahta Fotograflari";
-    private String dersNotuSubFolder = "Ders Notlari";
+    private String tahtaSubFolder;
+    private String dersNotuSubFolder;
     ArrayList<String[]> all;
     ArrayList<String[]> yuklenmemisResimler;
     String[] tumDersAdlari;
@@ -172,7 +173,7 @@ public class CreateFolderAPI extends BaseDemoActivity{
         }
     }
 
-    public CreateFolderAPI(DBHelper db,File myPath,GoogleApiClient client)
+    public CreateFolderAPI(DBHelper db, File myPath, GoogleApiClient client, Context con)
     {
         path = myPath;
         myGoogleApiClient = client;
@@ -183,6 +184,8 @@ public class CreateFolderAPI extends BaseDemoActivity{
         yuklenmemisResimler = mydb.getResimler("",false);
         bmOptions = new BitmapFactory.Options();
         fotoIndex = 0;
+        tahtaSubFolder = con.getString(R.string.tahta_fotolari);
+        dersNotuSubFolder = con.getString(R.string.ders_notlari);
     }
 
     public void doTaskBabe( )
