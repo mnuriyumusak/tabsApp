@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         });
 
         cekilen_resim_sayisi = (TextView) findViewById(R.id.cekilen_resim_sayisi);
-        cekilen_resim_sayisi.setText(""+mydb.getCekilenResimSayisi());
+        cekilen_resim_sayisi.setText(""+mydb.getToplamResimSayisi());
         File externalPath = null;
         if(mydb.hasSDKart())
             externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
@@ -144,7 +144,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
 
     }
-
 
     //başarılı bir çekim işleminin sonucu
     @Override

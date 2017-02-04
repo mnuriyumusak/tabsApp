@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table infos " +
-                        "(id integer primary key, university_name text ,nick_name text,sdkart integer,external_storage integer, dil integer);"
+                        "(id integer primary key, university_name text ,nick_name text,sdkart integer,external_storage integer, dil integer, toplam_resim integer);"
         );
 
         db.execSQL(
@@ -88,6 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void addNewPhoto(String photoName, String courseName, boolean isTahtaFotosu)
     {
         ContentValues contentValues = new ContentValues();
+        int toplam = getToplamResimSayisi()+1;
         SQLiteDatabase db = this.getWritableDatabase();
         contentValues.put("file_name", photoName);
         contentValues.put("course_name", courseName);
@@ -97,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         else
             contentValues.put("is_ders_notu", 1);
         db.insert("drive_files", null, contentValues);
+        db.execSQL("update infos set toplam_resim="+toplam+" where id=1");
         db.close();
     }
 
@@ -320,6 +322,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("nick_name", "");
         contentValues.put("sdkart", 0);
         contentValues.put("dil", 0);
+        contentValues.put("toplam_resim", 0);
         boolean isStorageExist = checkStorage();
         if(isStorageExist)
             contentValues.put("external_storage", 1);
@@ -343,6 +346,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 "', nick_name='"+con.getResources().getString(R.string.girilmemis)+"' where id=1");
         db.execSQL("update dersler set ders_adi='"+con.getResources().getString(R.string.tanimlanamayanlar)+"' where id=1");
         db.close();
+    }
+
+    public int getDil()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select dil from infos", null );
+        int dil = 0;
+        if(res.getCount() != 0)
+        {
+            res.moveToFirst();
+            dil = res.getInt(res.getColumnIndex("dil"));
+        }
+        db.close();
+        return dil;
     }
 
     public void dilEkle(String dilAdi)
@@ -443,6 +460,19 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         return name;
+    }
+
+    public int getToplamResimSayisi() {
+        int total = 0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res =  db.rawQuery( "select toplam_resim from infos", null );
+        if(res.getCount() != 0)
+        {
+            res.moveToFirst();
+            total = res.getInt(res.getColumnIndex("toplam_resim"));
+        }
+        db.close();
+        return total;
     }
 
     public String getNickName() {

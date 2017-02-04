@@ -24,7 +24,7 @@
                 android:inputType="textPersonName"
                 android:ems="10"
                 android:id="@+id/nick_field"
-                android:hint="giriniz..."
+                android:hint="@string/giriniz"
                 android:layout_alignBaseline="@+id/textView"
                 android:layout_alignBottom="@+id/textView"
                 android:layout_alignStart="@+id/university_field" />
@@ -88,6 +88,16 @@
                 android:background="@drawable/my_button"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/uni_edit_text"
+                android:hint="@string/giriniz"
+                android:layout_above="@+id/nick_field"
+                android:layout_alignStart="@+id/nick_field" />
 
         </RelativeLayout>
     </RelativeLayout>

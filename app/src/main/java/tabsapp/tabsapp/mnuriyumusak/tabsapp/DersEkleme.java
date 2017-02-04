@@ -42,6 +42,7 @@ public class DersEkleme extends AppCompatActivity {
     TextView general_university_name;
     TextView general_nick_name;
     TextView sdkart_yazisi;
+    EditText uni_text;
 
     //drawer things
     private DrawerLayout myDrawer;
@@ -144,6 +145,19 @@ public class DersEkleme extends AppCompatActivity {
         sdKart = (Switch) findViewById(R.id.sdkart_switch);
         sdkart_yazisi = (TextView) findViewById(R.id.sdkart_yazisi);
 
+        uni_text = (EditText) findViewById(R.id.uni_edit_text);
+
+        if(mydb.getDil() == 0)
+        {
+            uni_text.setVisibility(View.INVISIBLE);
+            university.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            uni_text.setVisibility(View.VISIBLE);
+            university.setVisibility(View.INVISIBLE);
+        }
+
         if(!mydb.isIlkGiris())
         {
             sdkart_yazisi.setVisibility(View.INVISIBLE);
@@ -184,7 +198,12 @@ public class DersEkleme extends AppCompatActivity {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         if(!nick.getText().toString().equals(""))
                                         {
-                                            String uniName = university_text;
+                                            String uniName;
+                                            if(mydb.getDil() == 0)
+                                                uniName = university_text;
+                                            else
+                                                uniName = uni_text.getText().toString();
+
                                             String nickName = nick.getText().toString();
                                             int isSdKart = (sdKart.isChecked())?1:0;
                                             if(!mydb.getExternalStorageStatus() && isSdKart==1)
