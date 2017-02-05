@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tabsDeneme</string>
 
+    <string name="bu_ana_klasor">Bu klasör silinemez!</string>
+
     <string name="yok">Yok</string>
 
     <string name="lutfen">Lütfen tüm alanları doldurun!</string>

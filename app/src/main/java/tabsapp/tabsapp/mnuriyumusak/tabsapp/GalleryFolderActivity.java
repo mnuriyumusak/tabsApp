@@ -152,10 +152,11 @@ public class GalleryFolderActivity extends AppCompatActivity {
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int position, long arg3) {
+                                           final int position, long arg3) {
                 if(!isOnSubFolder)
                 {
                     final CharSequence[] items = {getResources().getString(R.string.delete)};
+                    final int curPos = position;
                     final String silinecekDersAdi = folders.get(position);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(GalleryFolderActivity.this);
@@ -170,16 +171,21 @@ public class GalleryFolderActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         switch (which){
                                             case DialogInterface.BUTTON_POSITIVE:
-                                                mydb.dersSil(silinecekDersAdi);
-                                                //File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-                                                File externalPath = null;
-                                                if(mydb.hasSDKart())
-                                                    externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
-                                                PictureNameCreator pnc = new PictureNameCreator(externalPath,getApplicationContext());
-                                                pnc.dersiSil(silinecekDersAdi,mydb);
-                                                Toast.makeText(getApplicationContext(),getResources().getString(R.string.ders_silindi),Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(GalleryFolderActivity.this, GalleryFolderActivity.class);
-                                                startActivity(intent);
+                                                if(curPos != 0)
+                                                {
+                                                    mydb.dersSil(silinecekDersAdi);
+                                                    //File externalPath = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+                                                    File externalPath = null;
+                                                    if(mydb.hasSDKart())
+                                                        externalPath = new File(getApplicationContext().getExternalCacheDirs()[1].getPath().toString()+"/Fotolar");
+                                                    PictureNameCreator pnc = new PictureNameCreator(externalPath,getApplicationContext());
+                                                    pnc.dersiSil(silinecekDersAdi,mydb);
+                                                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.ders_silindi),Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(GalleryFolderActivity.this, GalleryFolderActivity.class);
+                                                    startActivity(intent);
+                                                }
+                                                else
+                                                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.bu_ana_klasor),Toast.LENGTH_SHORT).show();
                                                 break;
                                             case DialogInterface.BUTTON_NEGATIVE:
                                                 break;

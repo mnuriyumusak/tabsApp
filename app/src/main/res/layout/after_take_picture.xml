@@ -11,7 +11,6 @@
     <ImageView
         app:srcCompat="@mipmap/content_films"
         android:id="@+id/after_take_imageview"
-        android:rotation="90"
         android:layout_height="match_parent"
         android:cropToPadding="false"
         android:adjustViewBounds="true"
@@ -20,7 +19,8 @@
         android:elevation="0dp"
         android:paddingBottom="0dp"
         android:layout_marginBottom="205dp"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:layout_marginTop="3dp" />
 
     <Button
         android:text="@string/kaydet"

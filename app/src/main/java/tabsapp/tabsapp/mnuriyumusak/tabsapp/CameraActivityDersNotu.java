@@ -41,7 +41,7 @@ public class CameraActivityDersNotu extends AppCompatActivity {
     PictureNameCreator pnc;
     Spinner ders_secimi;
     String selectedDers = "";
-
+    private String oncedenSecilenDers;
     //drawer things
     private DrawerLayout myDrawer;
     private ActionBarDrawerToggle myToggle;
@@ -64,6 +64,9 @@ public class CameraActivityDersNotu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ders_notu_cek_layout);
         mydb = new DBHelper(this);
+
+        Bundle extras = getIntent().getExtras();
+        oncedenSecilenDers = extras.getString("oncedenSecilenDers");
 
         //drawer things
         navigationView = (NavigationView) findViewById(R.id.navigation_view_ders_notu_cek);
@@ -149,6 +152,15 @@ public class CameraActivityDersNotu extends AppCompatActivity {
             customAdapter =new CustomSpinnerAdapter(getApplicationContext(),tmp);
         }
         ders_secimi.setAdapter(customAdapter);
+        for(int k = 0; k < customAdapter.dersAdlari.length ; k++)
+        {
+            if(customAdapter.dersAdlari[k].equals(oncedenSecilenDers))
+            {
+                ders_secimi.setSelection(k);
+                break;
+            }
+        }
+
         ders_secimi.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView parent, View view, int position, long id) {
@@ -169,9 +181,10 @@ public class CameraActivityDersNotu extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAM_REQUEST && resultCode == RESULT_OK)
         {
-            Intent intent = new Intent(this, AfterPicture.class);
+            Intent intent = new Intent(getApplicationContext(), AfterPicture.class);
             intent.putExtra("isTahtaFotosu", false);
             intent.putExtra("manuelDersAdi", selectedDers);
+            intent.putExtra("fromTahtaFotosuCek", false);
             startActivity(intent);
         }
     }

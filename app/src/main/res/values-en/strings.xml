@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tabsDeneme</string>
 
+    <string name="bu_ana_klasor">This folder can not be deleted!</string>
+
     <string name="yok">None</string>
 
     <string name="lutfen">Please fill all the blanks!</string>

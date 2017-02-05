@@ -145,7 +145,8 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (gestureDetector.onTouchEvent(event)) {
-                    Intent intent = new Intent(CameraActivity.this, CameraActivityDersNotu.class);
+                    Intent intent = new Intent(getApplicationContext(), CameraActivityDersNotu.class);
+                    intent.putExtra("oncedenSecilenDers", "");
                     startActivity(intent);
                     return true;
                 } else {
@@ -174,9 +175,10 @@ public class CameraActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAM_REQUEST && resultCode == RESULT_OK)
         {
-            Intent intent = new Intent(this, AfterPicture.class);
+            Intent intent = new Intent(getApplicationContext(), AfterPicture.class);
             intent.putExtra("isTahtaFotosu", true);
             intent.putExtra("manuelDersAdi", "");
+            intent.putExtra("fromTahtaFotosuCek", true);
             startActivity(intent);
         }
     }

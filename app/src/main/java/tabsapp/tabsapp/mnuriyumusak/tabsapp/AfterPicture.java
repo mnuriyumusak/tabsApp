@@ -18,6 +18,8 @@ import android.widget.ImageView;
 
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 
 /**
@@ -33,6 +35,7 @@ public class AfterPicture extends AppCompatActivity {
     private static final int CAM_REQUEST = 1313;
     public boolean isTahtaFotosu ;
     public String manuelDersAdi ;
+    private boolean fromTahtaFotosuCek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class AfterPicture extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         isTahtaFotosu = extras.getBoolean("isTahtaFotosu");
         manuelDersAdi = extras.getString("manuelDersAdi");
-
+        fromTahtaFotosuCek = extras.getBoolean("fromTahtaFotosuCek");
 
         File externalPath = null;
         if(mydb.hasSDKart())
@@ -55,8 +58,8 @@ public class AfterPicture extends AppCompatActivity {
         kaydet = (Button) findViewById(R.id.ok_button);
 
         File imageFile = pnc.getPictureImageFile(mydb,true,false,isTahtaFotosu,manuelDersAdi);
-        Bitmap thumbnail = BitmapFactory.decodeFile(imageFile.getPath());
-        imgTakenPhoto.setImageBitmap(thumbnail);
+        //final Bitmap thumbnail = BitmapFactory.decodeFile(imageFile.getPath());
+        Glide.with(getApplicationContext()).load(Uri.fromFile(imageFile)).into(imgTakenPhoto);
 
         yenidenCek.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -78,8 +81,17 @@ public class AfterPicture extends AppCompatActivity {
                 else
                     mydb.addNewPhoto(photoName, manuelDersAdi,isTahtaFotosu);
 
-                Intent intent = new Intent(AfterPicture.this, CameraActivity.class);
-                startActivity(intent);
+                if(fromTahtaFotosuCek)
+                {
+                    Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent(getApplicationContext(), CameraActivityDersNotu.class);
+                    intent.putExtra("oncedenSecilenDers", manuelDersAdi);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -91,7 +103,7 @@ public class AfterPicture extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CAM_REQUEST)
         {
-            Intent intent = new Intent(this, AfterPicture.class);
+            Intent intent = new Intent(getApplicationContext(), AfterPicture.class);
             intent.putExtra("isTahtaFotosu", isTahtaFotosu);
             intent.putExtra("manuelDersAdi", manuelDersAdi);
             startActivity(intent);
