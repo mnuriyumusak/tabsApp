@@ -65,6 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<String> getDersFolders()
     {
         ArrayList<String> dersler = new ArrayList<>();
+        ArrayList<String> derslerSon = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res =  db.rawQuery( "select * from dersler", null );
@@ -79,9 +80,18 @@ public class DBHelper extends SQLiteOpenHelper {
             } while (res.moveToNext());
         }
         else
-            dersler = null;
+            derslerSon = null;
+
+        if(dersler != null)
+        {
+            for(String str : dersler)
+            {
+                if(!derslerSon.contains(str))
+                    derslerSon.add(str);
+            }
+        }
         db.close();
-        return  dersler;
+        return  derslerSon;
     }
 
 
@@ -241,6 +251,7 @@ public class DBHelper extends SQLiteOpenHelper {
     {
         ContentValues contentValues = new ContentValues();
         SQLiteDatabase db = this.getWritableDatabase();
+
         contentValues.put("ders_adi", ad);
         contentValues.put("ders_gunu", gun);
         contentValues.put("ders_baslangic", baslangic);
@@ -248,6 +259,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("tahta_photo_no", 0);
         contentValues.put("not_photo_no", 0);
         db.insert("dersler", null, contentValues);
+
         db.close();
     }
 
@@ -530,6 +542,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return all;
         }
     }
+
 
     public String getCurrentDersAdi(String curDay,String bas, String son)
     {

@@ -140,11 +140,15 @@ public class CameraActivityDersNotu extends AppCompatActivity {
         ders_notu_cek = (Button) findViewById(R.id.not_cek_foto_Cek);
         ders_notu_cek.setOnClickListener(new CameraActivityDersNotu.btnTakePhotoClicker());
         ders_secimi = (Spinner) findViewById(R.id.ders_secim_spinner);
-        ArrayList<String[]> all = mydb.getTumDersler("");
+        ArrayList<String> all = mydb.getDersFolders();
+        String[] usage = new String[all.size()];
+        for(int i = 0; i < all.size(); i++)
+            usage[i] = all.get(i);
         final CustomSpinnerAdapter customAdapter;
+
         if(all.size() != 0)
         {
-            customAdapter =new CustomSpinnerAdapter(getApplicationContext(),all.get(0));
+            customAdapter =new CustomSpinnerAdapter(getApplicationContext(),usage);
         }
         else
         {

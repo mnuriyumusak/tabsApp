@@ -3,6 +3,7 @@ package tabsapp.tabsapp.mnuriyumusak.tabsapp;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     private TextView cekilen_resim_sayisi;
     private TextView suanki_ders;
     private boolean isFromAnother = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
 
     }
+
 
     //başarılı bir çekim işleminin sonucu
     @Override
